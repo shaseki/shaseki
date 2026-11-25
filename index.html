@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SHASEKI.PRO // WAYLAND TILING SYSTEM</title>
+
+  <!-- Google Fonts: Unbounded (700, 800, 900) & JetBrains Mono (400, 500) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@700;800;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       SHASEKI DESIGN SYSTEM — FLAT 2D BRUTALIST WAYLAND TOKENS
+       ========================================================================== */
+    :root {
+      --bg-primary: #000000;
+      --bg-surface: #0B0B0B;
+      --fg-primary: #DCDAD0; /* Bone White */
+      --fg-muted: #737373;
+      --border-subtle: #222222;
+      --border-strong: #DCDAD0;
+
+      --font-display: 'Unbounded', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --waybar-h: 38px;
+      --tile-gap: 8px;
+      --chamfer-sm: 10px;
+      --chamfer-md: 16px;
+    }
+
+    /* Brutalist Reset: Strict 0px radius, zero shadows */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      border-radius: 0px !important;
+      box-shadow: none !important;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-primary);
+      color: var(--fg-primary);
+      font-family: var(--font-mono);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+    }
+
+    /* ==========================================================================
+       ANALOG FILM GRAIN OVERLAY (4% OPACITY)
+       ========================================================================== */
+    #grain-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.04;
+      transition: opacity 150ms linear;
+    }
+    #grain-overlay.grain-off {
+      opacity: 0;
+    }
+
+    /* ==========================================================================
+       FIXED TOP WAYBAR (38px)
+       ========================================================================== */
+    #waybar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--waybar-h);
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 50;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    #waybar .ws-tab {
+      height: 24px;
+      padding: 0 9px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+    }
+    #waybar .ws-tab:hover {
+      color: var(--fg-primary);
+      border-color: var(--border-subtle);
+    }
+    #waybar .ws-tab.is-active {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border-color: var(--fg-primary);
+      font-weight: 500;
+    }
+
+    .waybar-btn {
+      height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--fg-primary);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+    }
+    .waybar-btn:hover {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border-color: var(--fg-primary);
+    }
+
+    /* ==========================================================================
+       HORIZONTAL SCROLL TRACK & WORKSPACES
+       ========================================================================== */
+    #workspace-track {
+      position: fixed;
+      top: var(--waybar-h);
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      cursor: grab;
+    }
+    #workspace-track::-webkit-scrollbar {
+      display: none;
+    }
+    #workspace-track.is-dragging {
+      cursor: grabbing;
+      user-select: none;
+    }
+
+    .workspace {
+      flex: 0 0 100vw;
+      width: 100vw;
+      height: calc(100vh - var(--waybar-h));
+      padding: var(--tile-gap);
+      display: grid;
+      gap: var(--tile-gap);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       FLAT 2D WAYLAND TILING WINDOWS (.tile)
+       ========================================================================== */
+    .tile {
+      position: relative;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: border-color 120ms linear;
+    }
+    .tile:hover {
+      border-color: var(--border-strong);
+    }
+
+    .tile-header {
+      height: 28px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      background-color: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      flex-shrink: 0;
+    }
+
+    .tile-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 1024px) {
+      .tile-body {
+        padding: 28px 32px;
+      }
+    }
+
+    /* Internal Agent Tabs (isolated from #waybar .ws-tab) */
+    .agent-tab {
+      height: 20px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+    }
+    .agent-tab:hover {
+      color: var(--fg-primary);
+      border-color: var(--border-subtle);
+    }
+    .agent-tab.is-active {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border-color: var(--fg-primary);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       45° OBLIQUE CHAMFER & BRUTALIST CONTROLS
+       ========================================================================== */
+    .shk-chamfer-sm {
+      clip-path: polygon(
+        var(--chamfer-sm) 0,
+        100% 0,
+        100% calc(100% - var(--chamfer-sm)),
+        calc(100% - var(--chamfer-sm)) 100%,
+        0 100%,
+        0 var(--chamfer-sm)
+      );
+    }
+
+    .shk-chamfer-md {
+      clip-path: polygon(
+        var(--chamfer-md) 0,
+        100% 0,
+        100% calc(100% - var(--chamfer-md)),
+        calc(100% - var(--chamfer-md)) 100%,
+        0 100%,
+        0 var(--chamfer-md)
+      );
+    }
+
+    .shk-btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 22px;
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border: 1px solid var(--fg-primary);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 100ms linear, color 100ms linear;
+    }
+    .shk-btn-primary:hover {
+      background-color: var(--bg-primary);
+      color: var(--fg-primary);
+    }
+
+    .shk-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 20px;
+      background-color: transparent;
+      color: var(--fg-primary);
+      border: 1px solid var(--border-strong);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 100ms linear, color 100ms linear;
+    }
+    .shk-btn-secondary:hover {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+    }
+
+    .shk-input {
+      width: 100%;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-primary);
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 100ms linear;
+    }
+    .shk-input:focus {
+      border-color: var(--fg-primary);
+    }
+    .shk-input::placeholder {
+      color: var(--fg-muted);
+    }
+
+    /* Dropzone highlight for local image preview fallback */
+    #concept-dropzone.is-dragover {
+      border-color: var(--fg-primary);
+      background-color: #111111;
+    }
+
+    /* Custom Thin Scrollbars */
+    .tile-body::-webkit-scrollbar,
+    .workspace::-webkit-scrollbar,
+    .no-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 0px;
+    }
+    .tile-body::-webkit-scrollbar-track,
+    .workspace::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    .tile-body::-webkit-scrollbar-thumb,
+    .workspace::-webkit-scrollbar-thumb {
+      background: #222222;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================================
+       TOGGLEABLE SVG FRACTAL NOISE FILM GRAIN OVERLAY (4%)
+       ====================================================================== -->
+  <div id="grain-overlay" aria-hidden="true">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <filter id="shasekiGrain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" />
+        <feColorMatrix type="saturate" values="0" />
+      </filter>
+      <rect width="100%" height="100%" filter="url(#shasekiGrain)" />
+    </svg>
+  </div>
+
+  <!-- ======================================================================
+       FIXED TOP WAYBAR (38px)
+       ====================================================================== -->
+  <header id="waybar">
+    <!-- Left: Brand text SHASEKI in Unbounded 900 ONLY -->
+    <button
+      type="button"
+      class="bg-transparent border-0 p-0 cursor-pointer nav-jump font-display font-black text-[13px] tracking-[0.04em] text-[#DCDAD0]"
+      data-target-ws="0"
+      aria-label="SHASEKI Inicio"
+    >
+      SHASEKI
+    </button>
+
+    <!-- Center: Workspace Navigation Tabs -->
+    <nav class="flex items-center justify-start md:justify-center gap-1 overflow-x-auto no-scrollbar" aria-label="Wayland Workspaces">
+      <button type="button" class="ws-tab is-active" data-ws="0">[01:CORE]</button>
+      <button type="button" class="ws-tab" data-ws="1">[02:AGENT]</button>
+      <button type="button" class="ws-tab" data-ws="2">[03:WORKS]</button>
+      <button type="button" class="ws-tab" data-ws="3">[04:STACK]</button>
+      <button type="button" class="ws-tab" data-ws="4">[05:DEPLOY]</button>
+    </nav>
+
+    <!-- Right: Grain Toggle & Horizontal Scroll Percentage -->
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button id="grain-toggle" type="button" class="waybar-btn" title="Activar/Desactivar grano analógico">
+        [GRAIN: ON]
+      </button>
+      <span id="scroll-pct" class="px-2 py-1 border border-[#222222] text-[10px] text-[#DCDAD0] min-w-[46px] text-center">
+        00%
+      </span>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       HORIZONTAL SCROLL TRACK (5 FULL-VIEWPORT WORKSPACES)
+       ====================================================================== -->
+  <main id="workspace-track">
+
+    <!-- ====================================================================
+         WORKSPACE 01 [01:CORE] — HOME
+         ==================================================================== -->
+    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="0" aria-label="Workspace 01 Core">
+      <!-- Left Window: Dedicated exclusively to shaseki concepto.jpg -->
+      <article class="tile lg:col-span-5">
+        <div class="tile-header">
+          <span>WIN_01 // shaseki_concepto.jpg</span>
+          <span>IMAGE_VIEW</span>
+        </div>
+        <div class="tile-body !p-0 bg-[#000000] relative flex items-center justify-center min-h-[300px]">
+          <img
+            id="hero-concept-img"
+            src="./shaseki concepto.jpg"
+            alt="SHASEKI Concepto"
+            class="w-full h-full object-cover block select-none"
+          />
+
+          <!-- Brutalist fallback if ./shaseki concepto.jpg is not mounted in sandbox -->
+          <div
+            id="concept-dropzone"
+            class="hidden absolute inset-0 bg-[#000000] p-6 flex flex-col items-center justify-center text-center border border-dashed border-[#222222] m-4 cursor-pointer"
+          >
+            <div class="text-[11px] text-[#DCDAD0] tracking-[0.1em] uppercase mb-2">
+              [404 // ./shaseki concepto.jpg NO MONTADO EN SANDBOX]
+            </div>
+            <p class="text-xs text-[#737373] max-w-xs leading-relaxed mb-5">
+              Hacé clic o arrastrá tu archivo local <span class="text-[#DCDAD0]">shaseki concepto.jpg</span> acá para previsualizarlo al instante.
+            </p>
+            <span class="shk-btn-secondary !py-2 !px-4 !text-[11px]">
+              [CARGAR IMAGEN LOCAL]
+            </span>
+            <input id="concept-file-input" type="file" accept="image/*" class="hidden" />
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Window: Commercial Core System Pitch & CTAs -->
+      <article class="tile lg:col-span-7">
+        <div class="tile-header">
+          <span>WIN_02 // CORE_SYSTEM</span>
+          <span>SCROLL HORIZONTAL →</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <div class="inline-block px-3 py-1 border border-[#222222] bg-[#000000] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-6">
+              [SHASEKI.PRO // ESTUDIO AUDIOVISUAL &amp; AUTOMATIZACIÓN IA]
+            </div>
+
+            <h1 class="font-display font-extrabold text-3xl sm:text-5xl xl:text-[54px] text-[#DCDAD0] leading-[1.02] max-w-3xl">
+              SISTEMAS VISUALES Y AUTOMATIZACIÓN QUE FACTURAN.
+            </h1>
+
+            <p class="mt-6 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
+              Combinamos diseño generativo, dirección audiovisual de alto impacto y servidores de automatización con <span class="text-[#DCDAD0]">n8n + agentes IA</span>. Construimos tu identidad y tu máquina operativa para capturar clientes sin fricción.
+            </p>
+
+            <!-- Primary & Secondary CTAs -->
+            <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
+              <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="1">
+                [VER_AGENTE_WHATSAPP] -&gt;
+              </button>
+              <button type="button" class="shk-btn-secondary nav-jump" data-target-ws="4">
+                [COTIZAR_PROYECTO] -&gt;
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry Strip -->
+          <div class="mt-10 pt-5 border-t border-[#222222] grid grid-cols-2 sm:grid-cols-3 gap-4 text-[11px] uppercase tracking-[0.08em]">
+            <div>
+              <span class="block text-[#737373] mb-1">NAVEGACIÓN</span>
+              <span class="text-[#DCDAD0]">RUEDA / FLECHAS / SWIPE</span>
+            </div>
+            <div>
+              <span class="block text-[#737373] mb-1">RENDER</span>
+              <span class="text-[#DCDAD0]">2D FLAT // 0PX RADIUS</span>
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <span class="block text-[#737373] mb-1">PRODUCTO PRINCIPAL</span>
+              <span class="text-[#DCDAD0]">WHATSAPP BOT + N8N</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================================
+         WORKSPACE 02 [02:AGENT] — PRIMARY PRODUCT (WHATSAPP + N8N)
+         ==================================================================== -->
+    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="1" aria-label="Workspace 02 Agent N8N">
+      <!-- Left Window: Commercial Pitch -->
+      <article class="tile lg:col-span-6">
+        <div class="tile-header">
+          <span>WIN_03 // WHATSAPP_AGENT_SERVER</span>
+          <span>EN DESARROLLO ACTIVO</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <div class="inline-block px-3 py-1 border border-[#DCDAD0] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-5">
+              [PRODUCTO ESTRELLA // N8N + AGENTE IA]
+            </div>
+
+            <h2 class="font-display font-extrabold text-3xl sm:text-4xl xl:text-5xl text-[#DCDAD0] leading-[1.02]">
+              TU WHATSAPP EN PILOTO AUTOMÁTICO 24/7.
+            </h2>
+
+            <p class="mt-5 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
+              Montamos un servidor dedicado con <span class="text-[#DCDAD0]">n8n y un agente autónomo</span> que recibe cada mensaje de WhatsApp, extrae y valida los datos de entrada de tus clientes, los guarda estructurados en tu CRM o Google Sheets y responde al instante. Cero carga manual, cero leads perdidos.
+            </p>
+          </div>
+
+          <!-- 3 Sharp KPI Boxes -->
+          <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
+              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">24/7</div>
+              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">CAPTURA AUTOMÁTICA</div>
+            </div>
+            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
+              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">0 LEADS</div>
+              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">PERDIDOS POR DEMORA</div>
+            </div>
+            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
+              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">SERVER</div>
+              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">DEDICADO + CRM/SHEETS</div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap items-center gap-4">
+            <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="4">
+              [DEPLOYAR MI AGENTE] -&gt;
+            </button>
+            <a
+              href="https://shaseki.github.io/AI-Automation-Final/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="shk-btn-secondary"
+            >
+              ↗ ABRIR DEMO
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Window: Internal Tabbed Wayland Window -->
+      <article class="tile lg:col-span-6">
+        <div class="tile-header !px-2 gap-2">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            <button type="button" class="agent-tab is-active" data-agent-tab="demo">
+              [LIVE_DEMO: AI-AUTOMATION]
+            </button>
+            <button type="button" class="agent-tab" data-agent-tab="sim">
+              [SIMULADOR_N8N]
+            </button>
+          </div>
+          <span id="sim-status" class="hidden sm:inline shrink-0">LIVE</span>
+        </div>
+
+        <!-- Tab 1: Live Demo Iframe -->
+        <div id="agent-panel-demo" class="tile-body !p-3 bg-[#000000] justify-between">
+          <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-[#222222] text-[10px]">
+            <span class="text-[#737373] truncate">URL // https://shaseki.github.io/AI-Automation-Final/</span>
+            <a
+              href="https://shaseki.github.io/AI-Automation-Final/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="waybar-btn !h-[22px] inline-flex items-center shrink-0 no-underline"
+            >
+              ↗ ABRIR
+            </a>
+          </div>
+          <div class="flex-1 w-full min-h-[320px] border border-[#222222] bg-[#000000] overflow-hidden">
+            <iframe
+              src="https://shaseki.github.io/AI-Automation-Final/"
+              title="SHASEKI AI Automation Final — Live Demo"
+              class="w-full h-full min-h-[320px] border-0 bg-[#000000]"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Tab 2: Interactive N8N Pipeline Simulator -->
+        <div id="agent-panel-sim" class="tile-body hidden justify-between bg-[#000000]">
+          <div>
+            <div class="flex items-center justify-between gap-2 pb-4 border-b border-[#222222]">
+              <span class="text-[11px] text-[#737373] uppercase">N8N_PIPELINE :: CLIENT_INTAKE</span>
+              <button id="sim-run-btn" type="button" class="shk-btn-primary shk-chamfer-sm !py-2 !px-3 !text-[11px]">
+                [SIMULAR ENTRADA DE CLIENTE]
+              </button>
+            </div>
+
+            <!-- Pipeline Nodes -->
+            <div class="mt-4 space-y-2 text-xs">
+              <div id="node-1" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
+                <span>01 // WEBHOOK_WA</span>
+                <span class="node-state">WAITING</span>
+              </div>
+              <div id="node-2" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
+                <span>02 // AI_EXTRACT</span>
+                <span class="node-state">WAITING</span>
+              </div>
+              <div id="node-3" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
+                <span>03 // SERVER_DB</span>
+                <span class="node-state">WAITING</span>
+              </div>
+              <div id="node-4" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
+                <span>04 // AUTO_REPLY</span>
+                <span class="node-state">WAITING</span>
+              </div>
+            </div>
+
+            <!-- Live JSON Output -->
+            <div class="mt-5 p-4 bg-[#0B0B0B] border border-[#222222]">
+              <div class="text-[10px] text-[#737373] uppercase mb-2">// CLIENT_INTAKE_LOG.JSON</div>
+              <pre id="sim-json" class="text-[11px] leading-relaxed text-[#DCDAD0] overflow-x-auto m-0">{
+  "status": "READY",
+  "hint": "Presioná [SIMULAR ENTRADA DE CLIENTE] para ejecutar el pipeline n8n."
+}</pre>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-[#222222] text-[10px] text-[#737373] flex justify-between uppercase">
+            <span>WEBHOOK_WA → AI_EXTRACT → SERVER_DB → AUTO_REPLY</span>
+            <span>N8N SELF-HOSTED</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================================
+         WORKSPACE 03 [03:WORKS] — SELECTED WORKS (4 PROJECT CARDS)
+         ==================================================================== -->
+    <section class="workspace grid-cols-1 md:grid-cols-2" data-ws-index="2" aria-label="Workspace 03 Works">
+      <!-- [SHK-001] KOPROLITOS -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>[SHK-001]</span>
+          <span>AUDIOVISUAL &amp; WEB</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
+              KOPROLITOS
+            </h3>
+            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
+              Audiovisual &amp; Web Experience. Dirección visual, animación y micrositio interactivo publicado en GitHub Pages.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
+            <span class="text-[10px] text-[#737373] uppercase">SHASEKI.GITHUB.IO/KOPROLITOS</span>
+            <a
+              href="https://shaseki.github.io/koprolitos/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="shk-btn-primary shk-chamfer-sm !py-2 !px-4 !text-[11px]"
+            >
+              [ABRIR SITIO ↗]
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- [SHK-002] AI-AUTOMATION-FINAL -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>[SHK-002]</span>
+          <span>ORQUESTACIÓN N8N</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
+              AI-AUTOMATION-FINAL
+            </h3>
+            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
+              Dashboard Omarchy &amp; Orquestación n8n. Muestra interactiva en vivo de flujos automatizados y captura de datos.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
+            <span class="text-[10px] text-[#737373] uppercase">SHASEKI.GITHUB.IO/AI-AUTOMATION-FINAL</span>
+            <a
+              href="https://shaseki.github.io/AI-Automation-Final/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="shk-btn-primary shk-chamfer-sm !py-2 !px-4 !text-[11px]"
+            >
+              [VER MUESTRA ↗]
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- [SHK-003] WHATSAPP AGENT SERVER -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>[SHK-003]</span>
+          <span class="text-[#DCDAD0]">EN DESARROLLO ACTIVO</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
+              WHATSAPP AGENT SERVER
+            </h3>
+            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
+              Agente n8n de captura y gestión de clientes. Servidor propio para estructurar consultas de entrada 24/7.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
+            <span class="text-[10px] text-[#737373] uppercase">MÓDULO 02 // AGENT</span>
+            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="1">
+              [IR AL AGENTE →]
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- [SHK-004] ESCALERA CIRCULAR -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>[SHK-004]</span>
+          <span>CO-PRODUCCIÓN</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
+              ESCALERA CIRCULAR
+            </h3>
+            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
+              Co-producción audiovisual y sistemas visuales generativos. Placas de identidad, audio y síntesis gráfica monocromática.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
+            <span class="text-[10px] text-[#737373] uppercase">AUDIO × VISUAL</span>
+            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="4">
+              [CONSULTAR →]
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================================
+         WORKSPACE 04 [04:STACK] — CAPABILITIES (3 COLUMNS)
+         ==================================================================== -->
+    <section class="workspace grid-cols-1 lg:grid-cols-3" data-ws-index="3" aria-label="Workspace 04 Stack">
+      <!-- 01 -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>CAP_01 // AUTOMATION</span>
+          <span>24/7 SERVER</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <span class="text-xs text-[#737373] tracking-[0.12em]">[01]</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
+              AUTOMATIZACIÓN &amp; AGENTES IA
+            </h2>
+            <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
+              Arquitectura de servidores propios para captura, validación y respuesta automática de clientes sin dependencia de plataformas cerradas.
+            </p>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
+              <li>+ N8N (SELF-HOSTED WORKFLOWS)</li>
+              <li>+ WHATSAPP CLOUD API</li>
+              <li>+ AGENTES LLM CON EXTRACCIÓN JSON</li>
+              <li>+ INTEGRACIÓN CRM / SHEETS / DB</li>
+            </ul>
+          </div>
+          <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
+            TOOLS: N8N / WHATSAPP CLOUD API / LLMS
+          </div>
+        </div>
+      </article>
+
+      <!-- 02 -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>CAP_02 // DESIGN_SYSTEMS</span>
+          <span>LLM-READY</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <span class="text-xs text-[#737373] tracking-[0.12em]">[02]</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
+              DISEÑO GENERATIVO &amp; SISTEMAS
+            </h2>
+            <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
+              Sistemas de diseño documentados con rigor geométrico y tokens estructurados para escalar piezas con precisión mediante LLMs.
+            </p>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
+              <li>+ IDENTIDADES VECTORIALES 2D FLAT</li>
+              <li>+ DESIGN SYSTEMS PARA LLMS (MD / JSON)</li>
+              <li>+ TOKENS CSS &amp; COMPONENTES ATÓMICOS</li>
+              <li>+ FLUJO OPEN-SOURCE (LINUX / OMARCHY)</li>
+            </ul>
+          </div>
+          <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
+            TOOLS: FIGMA / INKSCAPE / TOKENS.JSON
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>CAP_03 // VISUAL_WEB</span>
+          <span>ZERO BLOAT</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <span class="text-xs text-[#737373] tracking-[0.12em]">[03]</span>
+            <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
+              AUDIOVISUAL &amp; WEB BRUTALISTA
+            </h2>
+            <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
+              Dirección audiovisual, visuales generativos y frontends ultrarrápidos diseñados para convertir y diferenciarse.
+            </p>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
+              <li>+ MOTION GRÁFICO &amp; PLACAS DE APERTURA</li>
+              <li>+ VISUALES EN VIVO CON HYDRA</li>
+              <li>+ LANDINGS DE ALTA CONVERSIÓN</li>
+              <li>+ CÓDIGO LIMPIO SIN FRAMEWORKS PESADOS</li>
+            </ul>
+          </div>
+          <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
+            TOOLS: AFTER EFFECTS / HYDRA / HTML-CSS-JS PURO
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ====================================================================
+         WORKSPACE 05 [05:DEPLOY] — CONTACT / BRIEF
+         ==================================================================== -->
+    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="4" aria-label="Workspace 05 Deploy">
+      <!-- Left Tile: Direct Commercial Pitch -->
+      <article class="tile lg:col-span-5">
+        <div class="tile-header">
+          <span>WIN_08 // DEPLOY_BRIEF</span>
+          <span>DIRECT LINE</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <span class="text-xs text-[#737373] tracking-[0.12em] uppercase">[05 // DEPLOY]</span>
+            <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-[#DCDAD0] mt-3 leading-[1.0]">
+              CONSTRUYAMOS TU SISTEMA.
+            </h2>
+            <p class="mt-6 text-sm sm:text-base text-[#737373] leading-relaxed">
+              Contanos qué proceso querés automatizar o qué identidad querés llevar a otro nivel. Respuesta técnica directa, sin vueltas.
+            </p>
+          </div>
+
+          <div class="mt-10 pt-6 border-t border-[#222222] space-y-3 text-xs uppercase tracking-[0.08em]">
+            <div class="flex justify-between">
+              <span class="text-[#737373]">EMAIL</span>
+              <a href="mailto:hola@shaseki.pro" class="text-[#DCDAD0] hover:underline">HOLA@SHASEKI.PRO</a>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#737373]">BASE</span>
+              <span class="text-[#DCDAD0]">ARGENTINA // REMOTO GLOBAL</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-[#737373]">RESPUESTA</span>
+              <span class="text-[#DCDAD0]">&lt; 24 HS HÁBILES</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Tile: Commercial Brief Form -->
+      <article class="tile lg:col-span-7">
+        <div class="tile-header">
+          <span>WIN_09 // TERMINAL_INTAKE.SH</span>
+          <span>READY</span>
+        </div>
+        <div class="tile-body justify-center">
+          <form id="deploy-form" class="space-y-4 max-w-2xl w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="f-name" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                  NOMBRE *
+                </label>
+                <input id="f-name" name="name" type="text" required placeholder="EJ: MARTÍN S." class="shk-input" />
+              </div>
+              <div>
+                <label for="f-contact" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                  WHATSAPP / EMAIL *
+                </label>
+                <input id="f-contact" name="contact" type="text" required placeholder="+54 9 ... / HOLA@..." class="shk-input" />
+              </div>
+            </div>
+
+            <div>
+              <label for="f-service" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                SERVICIO
+              </label>
+              <select id="f-service" name="service" class="shk-input cursor-pointer">
+                <option value="Agente WhatsApp + n8n">AGENTE WHATSAPP + N8N (SERVER PROPIO)</option>
+                <option value="Diseño Generativo & Design System">DISEÑO GENERATIVO &amp; DESIGN SYSTEM</option>
+                <option value="Audiovisual & Web Brutalista">AUDIOVISUAL &amp; WEB BRUTALISTA</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="f-detail" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                DETALLE DEL PROYECTO *
+              </label>
+              <textarea id="f-detail" name="detail" rows="4" required placeholder="Describí brevemente tu operación, objetivo o plazo..." class="shk-input resize-none"></textarea>
+            </div>
+
+            <div class="pt-2 flex flex-wrap items-center justify-between gap-4">
+              <button type="submit" class="shk-btn-primary shk-chamfer-sm">
+                [ENVIAR BRIEF // DEPLOY]
+              </button>
+              <span class="text-[10px] text-[#737373] uppercase">
+                DIRECTO // ZERO SPAM
+              </span>
+            </div>
+          </form>
+
+          <!-- Instant Terminal Confirmation Output -->
+          <div id="deploy-confirm" class="hidden max-w-2xl w-full p-6 bg-[#000000] border border-[#DCDAD0] shk-chamfer-md">
+            <div class="text-xs text-[#DCDAD0] uppercase tracking-[0.1em] mb-3">
+              [200 OK // BRIEF_DISPATCHED]
+            </div>
+            <pre id="deploy-receipt" class="text-xs text-[#737373] leading-relaxed whitespace-pre-wrap m-0"></pre>
+            <button id="deploy-reset" type="button" class="mt-6 shk-btn-secondary !py-2 !px-4 !text-[11px]">
+              [NUEVA CONSULTA]
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       JAVASCRIPT: HORIZONTAL WAYLAND NAVIGATION + LOCAL IMAGE LOADER + N8N SIM
+       ====================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      const track = document.getElementById('workspace-track');
+      const tabs = document.querySelectorAll('#waybar .ws-tab');
+      const navJumps = document.querySelectorAll('.nav-jump');
+      const scrollPctEl = document.getElementById('scroll-pct');
+      const grainToggleBtn = document.getElementById('grain-toggle');
+      const grainOverlay = document.getElementById('grain-overlay');
+
+      // ----------------------------------------------------------------------
+      // 1. HORIZONTAL SCROLL ENGINE & WAYBAR SYNC
+      // ----------------------------------------------------------------------
+      function getMaxScroll() {
+        return Math.max(track.scrollWidth - track.clientWidth, 1);
+      }
+
+      function updateWaybarProgress() {
+        const maxScroll = getMaxScroll();
+        const progress = Math.min(Math.max(track.scrollLeft / maxScroll, 0), 1);
+        const pct = Math.round(progress * 100);
+        scrollPctEl.textContent = `${String(pct).padStart(2, '0')}%`;
+
+        const activeIndex = Math.round(track.scrollLeft / Math.max(window.innerWidth, 1));
+        tabs.forEach((tab, idx) => {
+          tab.classList.toggle('is-active', idx === activeIndex);
+        });
+      }
+
+      function scrollToWorkspace(index) {
+        const clamped = Math.max(0, Math.min(index, tabs.length - 1));
+        track.scrollTo({
+          left: clamped * window.innerWidth,
+          behavior: 'smooth'
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const wsIdx = parseInt(tab.dataset.ws, 10);
+          if (!Number.isNaN(wsIdx)) scrollToWorkspace(wsIdx);
+        });
+      });
+
+      navJumps.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetWs = parseInt(btn.dataset.targetWs, 10);
+          if (!Number.isNaN(targetWs)) scrollToWorkspace(targetWs);
+        });
+      });
+
+      track.addEventListener('scroll', updateWaybarProgress, { passive: true });
+      window.addEventListener('resize', updateWaybarProgress);
+
+      // Vertical mouse wheel -> smooth horizontal navigation
+      track.addEventListener(
+        'wheel',
+        (e) => {
+          const scrollableTile = e.target.closest('.tile-body');
+          if (scrollableTile && scrollableTile.scrollHeight > scrollableTile.clientHeight + 2) {
+            const atTop = scrollableTile.scrollTop <= 0 && e.deltaY < 0;
+            const atBottom =
+              scrollableTile.scrollTop + scrollableTile.clientHeight >=
+                scrollableTile.scrollHeight - 2 && e.deltaY > 0;
+            if (!atTop && !atBottom) return;
+          }
+
+          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            track.scrollLeft += e.deltaY * 1.15;
+          }
+        },
+        { passive: false }
+      );
+
+      // Click-and-drag horizontal scrolling on desktop
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartScroll = 0;
+
+      track.addEventListener('mousedown', (e) => {
+        if (e.target.closest('a, button, input, textarea, select, iframe, #concept-dropzone')) return;
+        isDragging = true;
+        dragStartX = e.pageX;
+        dragStartScroll = track.scrollLeft;
+        track.classList.add('is-dragging');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.pageX - dragStartX;
+        track.scrollLeft = dragStartScroll - dx * 1.2;
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        track.classList.remove('is-dragging');
+      });
+
+      // Keyboard navigation (ArrowLeft / ArrowRight)
+      window.addEventListener('keydown', (e) => {
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        const currentIdx = Math.round(track.scrollLeft / Math.max(window.innerWidth, 1));
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          scrollToWorkspace(currentIdx + 1);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          scrollToWorkspace(currentIdx - 1);
+        }
+      });
+
+      // ----------------------------------------------------------------------
+      // 2. ANALOG FILM GRAIN TOGGLE
+      // ----------------------------------------------------------------------
+      let grainEnabled = true;
+      grainToggleBtn.addEventListener('click', () => {
+        grainEnabled = !grainEnabled;
+        grainOverlay.classList.toggle('grain-off', !grainEnabled);
+        grainToggleBtn.textContent = `[GRAIN: ${grainEnabled ? 'ON' : 'OFF'}]`;
+      });
+
+      // ----------------------------------------------------------------------
+      // 3. HERO IMAGE FALLBACK (CLICK OR DROP LOCAL FILE IN SANDBOX)
+      // ----------------------------------------------------------------------
+      const heroImg = document.getElementById('hero-concept-img');
+      const dropzone = document.getElementById('concept-dropzone');
+      const fileInput = document.getElementById('concept-file-input');
+
+      heroImg.addEventListener('error', () => {
+        heroImg.classList.add('hidden');
+        dropzone.classList.remove('hidden');
+      });
+
+      function loadLocalImage(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const objectUrl = URL.createObjectURL(file);
+        heroImg.src = objectUrl;
+        heroImg.classList.remove('hidden');
+        dropzone.classList.add('hidden');
+      }
+
+      dropzone.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          loadLocalImage(e.target.files[0]);
+        }
+      });
+
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('is-dragover');
+      });
+      dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('is-dragover');
+      });
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('is-dragover');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          loadLocalImage(e.dataTransfer.files[0]);
+        }
+      });
+
+      // ----------------------------------------------------------------------
+      // 4. AGENT WORKSPACE TABS & N8N PIPELINE SIMULATOR
+      // ----------------------------------------------------------------------
+      const agentTabs = document.querySelectorAll('.agent-tab');
+      const agentPanelDemo = document.getElementById('agent-panel-demo');
+      const agentPanelSim = document.getElementById('agent-panel-sim');
+      const simBtn = document.getElementById('sim-run-btn');
+      const simStatus = document.getElementById('sim-status');
+      const simJson = document.getElementById('sim-json');
+      const simNodes = [
+        document.getElementById('node-1'),
+        document.getElementById('node-2'),
+        document.getElementById('node-3'),
+        document.getElementById('node-4')
+      ];
+      let simRunning = false;
+
+      agentTabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.agentTab;
+          agentTabs.forEach((t) => t.classList.toggle('is-active', t === btn));
+          if (target === 'demo') {
+            agentPanelDemo.classList.remove('hidden');
+            agentPanelSim.classList.add('hidden');
+            simStatus.textContent = 'LIVE';
+          } else {
+            agentPanelDemo.classList.add('hidden');
+            agentPanelSim.classList.remove('hidden');
+            simStatus.textContent = simRunning ? 'RUNNING...' : 'IDLE';
+          }
+        });
+      });
+
+      const SAMPLE_INTAKES = [
+        {
+          cliente: 'Estudio Nómada',
+          whatsapp: '+54 9 11 4820-9102',
+          servicio: 'WHATSAPP_BOT_N8N',
+          prioridad: 'ALTA',
+          crm_sync: 'ROW_418 // OK',
+          auto_reply: 'ENVIADO (< 2.1s)'
+        },
+        {
+          cliente: 'Kinetik Audio',
+          whatsapp: '+54 9 280 451-3390',
+          servicio: 'DESIGN_SYSTEM_LLM',
+          prioridad: 'MEDIA',
+          crm_sync: 'ROW_419 // OK',
+          auto_reply: 'ENVIADO (< 1.8s)'
+        }
+      ];
+      let sampleIdx = 0;
+
+      simBtn.addEventListener('click', () => {
+        if (simRunning) return;
+        simRunning = true;
+        simStatus.textContent = 'RUNNING...';
+        simStatus.style.color = '#DCDAD0';
+
+        simNodes.forEach((el) => {
+          el.style.borderColor = '#222222';
+          el.style.color = '#737373';
+          el.querySelector('.node-state').textContent = 'PENDING';
+        });
+
+        simJson.textContent = '{\n  "status": "RECEIVING_WHATSAPP_WEBHOOK..."\n}';
+
+        const payload = SAMPLE_INTAKES[sampleIdx % SAMPLE_INTAKES.length];
+        sampleIdx++;
+
+        simNodes.forEach((el, idx) => {
+          setTimeout(() => {
+            el.style.borderColor = '#DCDAD0';
+            el.style.color = '#DCDAD0';
+            el.querySelector('.node-state').textContent = 'OK';
+
+            if (idx === simNodes.length - 1) {
+              simStatus.textContent = 'SYNCED_OK';
+              simJson.textContent = JSON.stringify(
+                {
+                  timestamp: new Date().toISOString(),
+                  pipeline: 'WEBHOOK_WA -> AI_EXTRACT -> SERVER_DB -> AUTO_REPLY',
+                  data: payload
+                },
+                null,
+                2
+              );
+              simRunning = false;
+            }
+          }, (idx + 1) * 300);
+        });
+      });
+
+      // ----------------------------------------------------------------------
+      // 5. CONTACT / BRIEF FORM (WORKSPACE 05)
+      // ----------------------------------------------------------------------
+      const deployForm = document.getElementById('deploy-form');
+      const deployConfirm = document.getElementById('deploy-confirm');
+      const deployReceipt = document.getElementById('deploy-receipt');
+      const deployReset = document.getElementById('deploy-reset');
+
+      deployForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(deployForm);
+        const receipt = {
+          status: 'QUEUED_FOR_REVIEW',
+          nombre: formData.get('name'),
+          contacto: formData.get('contact'),
+          servicio: formData.get('service'),
+          detalle: formData.get('detail'),
+          timestamp: new Date().toISOString()
+        };
+        deployReceipt.textContent =
+          'BRIEF RECIBIDO EN SHASEKI.PRO.\nRESPUESTA TÉCNICA EN < 24 HS.\n\n' +
+          JSON.stringify(receipt, null, 2);
+        deployForm.classList.add('hidden');
+        deployConfirm.classList.remove('hidden');
+      });
+
+      deployReset.addEventListener('click', () => {
+        deployForm.reset();
+        deployConfirm.classList.add('hidden');
+        deployForm.classList.remove('hidden');
+      });
+
+      window.onload = function () {
+        updateWaybarProgress();
+      };
+    })();
+  </script>
+</body>
+</html>
