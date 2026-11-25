@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHASEKI.PRO // WAYLAND TILING SYSTEM</title>
+  <title>SHASEKI | PATAGONIA ARGENTINA </title>
 
   <!-- Google Fonts: Unbounded (700, 800, 900) & JetBrains Mono (400, 500) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -425,84 +425,72 @@
          WORKSPACE 01 [01:CORE] — HOME
          ==================================================================== -->
     <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="0" aria-label="Workspace 01 Core">
-      <!-- Left Window: Dedicated exclusively to shaseki concepto.jpg -->
+      <!-- Left Window: Dedicated exclusively to SHASEKI _ VERTICAL FINALE_2.png -->
       <article class="tile lg:col-span-5">
         <div class="tile-header">
-          <span>WIN_01 // shaseki_concepto.jpg</span>
-          <span>IMAGE_VIEW</span>
+          <span>WIN_01 // IDENTITY_MASTER</span>
+          <span>STATIC_LOCKUP</span>
         </div>
-        <div class="tile-body !p-0 bg-[#000000] relative flex items-center justify-center min-h-[300px]">
+        <div class="tile-body !p-0 bg-[#000000] relative flex items-center justify-center min-h-[320px]">
           <img
             id="hero-concept-img"
-            src="./shaseki concepto.jpg"
-            alt="SHASEKI Concepto"
-            class="w-full h-full object-cover block select-none"
+            src="./logo.png"
+            alt="SHASEKI — Vertical Finale"
+            style="width: 100%; height: 100%; object-fit: contain; padding: 32px; background: #000000; display: block;"
+            class="select-none"
           />
 
-          <!-- Brutalist fallback if ./shaseki concepto.jpg is not mounted in sandbox -->
+          <!-- Brutalist fallback ONLY if ./SHASEKI _ VERTICAL FINALE_2.png is not mounted in sandbox -->
           <div
             id="concept-dropzone"
             class="hidden absolute inset-0 bg-[#000000] p-6 flex flex-col items-center justify-center text-center border border-dashed border-[#222222] m-4 cursor-pointer"
           >
-            <div class="text-[11px] text-[#DCDAD0] tracking-[0.1em] uppercase mb-2">
-              [404 // ./shaseki concepto.jpg NO MONTADO EN SANDBOX]
+            <div class="text-[11px] text-[#DCDAD0] tracking-[0.08em] uppercase leading-relaxed max-w-sm mb-5">
+              [IMAGEN LOCAL NO MONTADA EN PREVIEW — CLIC O ARRASTRÁ &quot;SHASEKI _ VERTICAL FINALE_2.png&quot;]
             </div>
-            <p class="text-xs text-[#737373] max-w-xs leading-relaxed mb-5">
-              Hacé clic o arrastrá tu archivo local <span class="text-[#DCDAD0]">shaseki concepto.jpg</span> acá para previsualizarlo al instante.
-            </p>
             <span class="shk-btn-secondary !py-2 !px-4 !text-[11px]">
-              [CARGAR IMAGEN LOCAL]
+              [SELECCIONAR ARCHIVO]
             </span>
             <input id="concept-file-input" type="file" accept="image/*" class="hidden" />
           </div>
         </div>
       </article>
 
-      <!-- Right Window: Commercial Core System Pitch & CTAs -->
+      <!-- Right Window: Core Manifesto & Commercial CTAs -->
       <article class="tile lg:col-span-7">
         <div class="tile-header">
-          <span>WIN_02 // CORE_SYSTEM</span>
+          <span>WIN_02 // CORE_MANIFESTO</span>
           <span>SCROLL HORIZONTAL →</span>
         </div>
         <div class="tile-body justify-between">
           <div>
             <div class="inline-block px-3 py-1 border border-[#222222] bg-[#000000] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-6">
-              [SHASEKI.PRO // ESTUDIO AUDIOVISUAL &amp; AUTOMATIZACIÓN IA]
+              [SHASEKI.PRO // ESTUDIO AUDIOVISUAL &amp; AGENTES IA]
             </div>
 
-            <h1 class="font-display font-extrabold text-3xl sm:text-5xl xl:text-[54px] text-[#DCDAD0] leading-[1.02] max-w-3xl">
-              SISTEMAS VISUALES Y AUTOMATIZACIÓN QUE FACTURAN.
+            <h1 class="font-display font-extrabold text-3xl sm:text-5xl xl:text-[50px] text-[#DCDAD0] leading-[1.02] max-w-3xl">
+              DISEÑO GENERATIVO, AUDIOVISUAL &amp; AGENTES IA QUE FACTURAN.
             </h1>
 
             <p class="mt-6 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
-              Combinamos diseño generativo, dirección audiovisual de alto impacto y servidores de automatización con <span class="text-[#DCDAD0]">n8n + agentes IA</span>. Construimos tu identidad y tu máquina operativa para capturar clientes sin fricción.
+              En <span class="text-[#DCDAD0]">SHASEKI</span> construimos sistemas visuales brutalistas, visuales en vivo/animados y servidores automatizados con <span class="text-[#DCDAD0]">n8n + WhatsApp IA</span> que convierten consultas entrantes en ingresos estructurados sin fricción operativa.
             </p>
 
             <!-- Primary & Secondary CTAs -->
             <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
               <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="1">
-                [VER_AGENTE_WHATSAPP] -&gt;
+                [DESPLEGAR AGENTE -&gt;]
               </button>
-              <button type="button" class="shk-btn-secondary nav-jump" data-target-ws="4">
-                [COTIZAR_PROYECTO] -&gt;
+              <button type="button" class="shk-btn-secondary nav-jump" data-target-ws="2">
+                [EXPLORAR ARCHIVO]
               </button>
             </div>
           </div>
 
-          <!-- Bottom Telemetry Strip -->
-          <div class="mt-10 pt-5 border-t border-[#222222] grid grid-cols-2 sm:grid-cols-3 gap-4 text-[11px] uppercase tracking-[0.08em]">
-            <div>
-              <span class="block text-[#737373] mb-1">NAVEGACIÓN</span>
-              <span class="text-[#DCDAD0]">RUEDA / FLECHAS / SWIPE</span>
-            </div>
-            <div>
-              <span class="block text-[#737373] mb-1">RENDER</span>
-              <span class="text-[#DCDAD0]">2D FLAT // 0PX RADIUS</span>
-            </div>
-            <div class="col-span-2 sm:col-span-1">
-              <span class="block text-[#737373] mb-1">PRODUCTO PRINCIPAL</span>
-              <span class="text-[#DCDAD0]">WHATSAPP BOT + N8N</span>
-            </div>
+          <!-- Bottom Technical Status Strip -->
+          <div class="mt-10 pt-5 border-t border-[#222222] flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em]">
+            <span class="text-[#DCDAD0]">STATUS: ONLINE // TRELEW, AR // WAYLAND_UI v2.4</span>
+            <span class="text-[#737373]">RUEDA / FLECHAS / SWIPE</span>
           </div>
         </div>
       </article>
@@ -515,43 +503,35 @@
       <!-- Left Window: Commercial Pitch -->
       <article class="tile lg:col-span-6">
         <div class="tile-header">
-          <span>WIN_03 // WHATSAPP_AGENT_SERVER</span>
-          <span>EN DESARROLLO ACTIVO</span>
+          <span>WIN_03 // WHATSAPP_N8N_AGENT</span>
+          <span>24/7 SERVER</span>
         </div>
         <div class="tile-body justify-between">
           <div>
             <div class="inline-block px-3 py-1 border border-[#DCDAD0] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-5">
-              [PRODUCTO ESTRELLA // N8N + AGENTE IA]
+              [PRODUCTO PRINCIPAL // WHATSAPP + N8N]
             </div>
 
             <h2 class="font-display font-extrabold text-3xl sm:text-4xl xl:text-5xl text-[#DCDAD0] leading-[1.02]">
-              TU WHATSAPP EN PILOTO AUTOMÁTICO 24/7.
+              TU ASISTENTE WHATSAPP EN SERVIDOR PROPIO 24/7.
             </h2>
 
             <p class="mt-5 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
-              Montamos un servidor dedicado con <span class="text-[#DCDAD0]">n8n y un agente autónomo</span> que recibe cada mensaje de WhatsApp, extrae y valida los datos de entrada de tus clientes, los guarda estructurados en tu CRM o Google Sheets y responde al instante. Cero carga manual, cero leads perdidos.
+              Desplegamos un servidor dedicado con <span class="text-[#DCDAD0]">n8n y agentes IA</span> que captura, valida, estructura y enruta cada dato de entrada de tus clientes por WhatsApp sin intervención humana.
             </p>
+
+            <!-- Concrete ROI Deliverables -->
+            <ul class="mt-6 space-y-2.5 text-xs sm:text-sm text-[#DCDAD0] border-t border-[#222222] pt-5 list-none pl-0">
+              <li>+ CAPTURA Y RESPUESTA EN &lt; 3 SEGUNDOS</li>
+              <li>+ ESTRUCTURACIÓN AUTOMÁTICA EN CRM / SHEETS / DB</li>
+              <li>+ COTIZACIÓN Y SEGUIMIENTO AUTOMÁTICO DE LEADS</li>
+              <li>+ SERVIDOR PROPIO SIN COMISIONES OCULTAS</li>
+            </ul>
           </div>
 
-          <!-- 3 Sharp KPI Boxes -->
-          <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
-              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">24/7</div>
-              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">CAPTURA AUTOMÁTICA</div>
-            </div>
-            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
-              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">0 LEADS</div>
-              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">PERDIDOS POR DEMORA</div>
-            </div>
-            <div class="p-4 bg-[#000000] border border-[#222222] shk-chamfer-sm">
-              <div class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">SERVER</div>
-              <div class="mt-2 text-[10px] tracking-[0.08em] text-[#737373] uppercase">DEDICADO + CRM/SHEETS</div>
-            </div>
-          </div>
-
-          <div class="mt-6 flex flex-wrap items-center gap-4">
+          <div class="mt-8 flex flex-wrap items-center gap-4">
             <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="4">
-              [DEPLOYAR MI AGENTE] -&gt;
+              [SOLICITAR IMPLEMENTACIÓN]
             </button>
             <a
               href="https://shaseki.github.io/AI-Automation-Final/"
@@ -559,7 +539,7 @@
               rel="noopener noreferrer"
               class="shk-btn-secondary"
             >
-              ↗ ABRIR DEMO
+              [ABRIR EN NUEVA PESTAÑA ↗]
             </a>
           </div>
         </div>
@@ -576,7 +556,7 @@
               [SIMULADOR_N8N]
             </button>
           </div>
-          <span id="sim-status" class="hidden sm:inline shrink-0">LIVE</span>
+          <span id="sim-status" class="hidden sm:inline shrink-0">WIN_04 // LIVE</span>
         </div>
 
         <!-- Tab 1: Live Demo Iframe -->
@@ -589,7 +569,7 @@
               rel="noopener noreferrer"
               class="waybar-btn !h-[22px] inline-flex items-center shrink-0 no-underline"
             >
-              ↗ ABRIR
+              [ABRIR EN NUEVA PESTAÑA ↗]
             </a>
           </div>
           <div class="flex-1 w-full min-h-[320px] border border-[#222222] bg-[#000000] overflow-hidden">
@@ -608,26 +588,26 @@
             <div class="flex items-center justify-between gap-2 pb-4 border-b border-[#222222]">
               <span class="text-[11px] text-[#737373] uppercase">N8N_PIPELINE :: CLIENT_INTAKE</span>
               <button id="sim-run-btn" type="button" class="shk-btn-primary shk-chamfer-sm !py-2 !px-3 !text-[11px]">
-                [SIMULAR ENTRADA DE CLIENTE]
+                [EJECUTAR FLUJO DE PRUEBA]
               </button>
             </div>
 
             <!-- Pipeline Nodes -->
             <div class="mt-4 space-y-2 text-xs">
               <div id="node-1" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
-                <span>01 // WEBHOOK_WA</span>
+                <span>01 // WEBHOOK_WHATSAPP</span>
                 <span class="node-state">WAITING</span>
               </div>
               <div id="node-2" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
-                <span>02 // AI_EXTRACT</span>
+                <span>02 // AI_AGENT_NODE</span>
                 <span class="node-state">WAITING</span>
               </div>
               <div id="node-3" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
-                <span>03 // SERVER_DB</span>
+                <span>03 // CRM_JSON_SYNC</span>
                 <span class="node-state">WAITING</span>
               </div>
               <div id="node-4" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
-                <span>04 // AUTO_REPLY</span>
+                <span>04 // AUTO_REPLY_WA</span>
                 <span class="node-state">WAITING</span>
               </div>
             </div>
@@ -637,13 +617,13 @@
               <div class="text-[10px] text-[#737373] uppercase mb-2">// CLIENT_INTAKE_LOG.JSON</div>
               <pre id="sim-json" class="text-[11px] leading-relaxed text-[#DCDAD0] overflow-x-auto m-0">{
   "status": "READY",
-  "hint": "Presioná [SIMULAR ENTRADA DE CLIENTE] para ejecutar el pipeline n8n."
+  "hint": "Presioná [EJECUTAR FLUJO DE PRUEBA] para simular la entrada de un cliente."
 }</pre>
             </div>
           </div>
 
           <div class="mt-4 pt-3 border-t border-[#222222] text-[10px] text-[#737373] flex justify-between uppercase">
-            <span>WEBHOOK_WA → AI_EXTRACT → SERVER_DB → AUTO_REPLY</span>
+            <span>WEBHOOK_WA → AI_AGENT → CRM_SYNC → AUTO_REPLY</span>
             <span>N8N SELF-HOSTED</span>
           </div>
         </div>
@@ -651,14 +631,14 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 03 [03:WORKS] — SELECTED WORKS (4 PROJECT CARDS)
+         WORKSPACE 03 [03:WORKS] — SELECTED ARCHIVE (2x2 TILING GRID)
          ==================================================================== -->
     <section class="workspace grid-cols-1 md:grid-cols-2" data-ws-index="2" aria-label="Workspace 03 Works">
       <!-- [SHK-001] KOPROLITOS -->
       <article class="tile">
         <div class="tile-header">
           <span>[SHK-001]</span>
-          <span>AUDIOVISUAL &amp; WEB</span>
+          <span>ANIMATION &amp; WEB</span>
         </div>
         <div class="tile-body justify-between">
           <div>
@@ -666,7 +646,7 @@
               KOPROLITOS
             </h3>
             <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
-              Audiovisual &amp; Web Experience. Dirección visual, animación y micrositio interactivo publicado en GitHub Pages.
+              Videoclip animado y experiencia web. Stop-motion en plastilina, live-coding en Hydra y composición 2.5D.
             </p>
           </div>
           <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
@@ -687,7 +667,7 @@
       <article class="tile">
         <div class="tile-header">
           <span>[SHK-002]</span>
-          <span>ORQUESTACIÓN N8N</span>
+          <span>N8N ORCHESTRATION</span>
         </div>
         <div class="tile-body justify-between">
           <div>
@@ -695,7 +675,7 @@
               AI-AUTOMATION-FINAL
             </h3>
             <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
-              Dashboard Omarchy &amp; Orquestación n8n. Muestra interactiva en vivo de flujos automatizados y captura de datos.
+              Dashboard colectivo de administración de datos con interfaz inspirada en Omarchy y orquestación en n8n.
             </p>
           </div>
           <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
@@ -712,34 +692,10 @@
         </div>
       </article>
 
-      <!-- [SHK-003] WHATSAPP AGENT SERVER -->
+      <!-- [SHK-003] ESCALERA CIRCULAR -->
       <article class="tile">
         <div class="tile-header">
           <span>[SHK-003]</span>
-          <span class="text-[#DCDAD0]">EN DESARROLLO ACTIVO</span>
-        </div>
-        <div class="tile-body justify-between">
-          <div>
-            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
-              WHATSAPP AGENT SERVER
-            </h3>
-            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
-              Agente n8n de captura y gestión de clientes. Servidor propio para estructurar consultas de entrada 24/7.
-            </p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
-            <span class="text-[10px] text-[#737373] uppercase">MÓDULO 02 // AGENT</span>
-            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="1">
-              [IR AL AGENTE →]
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- [SHK-004] ESCALERA CIRCULAR -->
-      <article class="tile">
-        <div class="tile-header">
-          <span>[SHK-004]</span>
           <span>CO-PRODUCCIÓN</span>
         </div>
         <div class="tile-body justify-between">
@@ -748,7 +704,7 @@
               ESCALERA CIRCULAR
             </h3>
             <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
-              Co-producción audiovisual y sistemas visuales generativos. Placas de identidad, audio y síntesis gráfica monocromática.
+              Co-producción audiovisual y sistema de identidad visual sobre negro profundo y grano analógico.
             </p>
           </div>
           <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
@@ -759,36 +715,60 @@
           </div>
         </div>
       </article>
+
+      <!-- [SHK-004] LIVE VISUAL SYSTEMS -->
+      <article class="tile">
+        <div class="tile-header">
+          <span>[SHK-004]</span>
+          <span>STAGE MOTION</span>
+        </div>
+        <div class="tile-body justify-between">
+          <div>
+            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
+              LIVE VISUAL SYSTEMS
+            </h3>
+            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
+              Motion graphics de gran formato y visuales generativos en tiempo real para shows en vivo de rock e indie.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
+            <span class="text-[10px] text-[#737373] uppercase">HYDRA // LIVE STAGE</span>
+            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="4">
+              [CONSULTAR →]
+            </button>
+          </div>
+        </div>
+      </article>
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 04 [04:STACK] — CAPABILITIES (3 COLUMNS)
+         WORKSPACE 04 [04:STACK] — 3-COLUMN TILING BREAKDOWN
          ==================================================================== -->
     <section class="workspace grid-cols-1 lg:grid-cols-3" data-ws-index="3" aria-label="Workspace 04 Stack">
       <!-- 01 -->
       <article class="tile">
         <div class="tile-header">
-          <span>CAP_01 // AUTOMATION</span>
-          <span>24/7 SERVER</span>
+          <span>01 // AI_AUTOMATION</span>
+          <span>SELF-HOSTED</span>
         </div>
         <div class="tile-body justify-between">
           <div>
             <span class="text-xs text-[#737373] tracking-[0.12em]">[01]</span>
             <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
-              AUTOMATIZACIÓN &amp; AGENTES IA
+              AI_AUTOMATION
             </h2>
             <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
-              Arquitectura de servidores propios para captura, validación y respuesta automática de clientes sin dependencia de plataformas cerradas.
+              Infraestructura propia para automatizar captura de clientes, validación de datos y respuestas inteligentes 24/7.
             </p>
-            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
-              <li>+ N8N (SELF-HOSTED WORKFLOWS)</li>
-              <li>+ WHATSAPP CLOUD API</li>
-              <li>+ AGENTES LLM CON EXTRACCIÓN JSON</li>
-              <li>+ INTEGRACIÓN CRM / SHEETS / DB</li>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5 list-none pl-0">
+              <li>+ N8N WORKFLOWS</li>
+              <li>+ WHATSAPP BUSINESS CLOUD API</li>
+              <li>+ LLM AGENTS &amp; WEBHOOKS</li>
+              <li>+ SELF-HOSTED SERVERS</li>
             </ul>
           </div>
           <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
-            TOOLS: N8N / WHATSAPP CLOUD API / LLMS
+            STACK: N8N / CLOUD API / LLMS / WEBHOOKS
           </div>
         </div>
       </article>
@@ -796,27 +776,27 @@
       <!-- 02 -->
       <article class="tile">
         <div class="tile-header">
-          <span>CAP_02 // DESIGN_SYSTEMS</span>
-          <span>LLM-READY</span>
+          <span>02 // AUDIOVISUAL_&_MOTION</span>
+          <span>GENERATIVE</span>
         </div>
         <div class="tile-body justify-between">
           <div>
             <span class="text-xs text-[#737373] tracking-[0.12em]">[02]</span>
             <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
-              DISEÑO GENERATIVO &amp; SISTEMAS
+              AUDIOVISUAL &amp; MOTION
             </h2>
             <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
-              Sistemas de diseño documentados con rigor geométrico y tokens estructurados para escalar piezas con precisión mediante LLMs.
+              Dirección audiovisual, motion graphics y sistemas visuales generativos para pantallas, lanzamientos y shows en vivo.
             </p>
-            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
-              <li>+ IDENTIDADES VECTORIALES 2D FLAT</li>
-              <li>+ DESIGN SYSTEMS PARA LLMS (MD / JSON)</li>
-              <li>+ TOKENS CSS &amp; COMPONENTES ATÓMICOS</li>
-              <li>+ FLUJO OPEN-SOURCE (LINUX / OMARCHY)</li>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5 list-none pl-0">
+              <li>+ DIRECCIÓN AUDIOVISUAL</li>
+              <li>+ AFTER EFFECTS</li>
+              <li>+ BLENDER GEOMETRY NODES</li>
+              <li>+ HYDRA LIVE-CODING</li>
             </ul>
           </div>
           <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
-            TOOLS: FIGMA / INKSCAPE / TOKENS.JSON
+            STACK: AE / BLENDER / HYDRA
           </div>
         </div>
       </article>
@@ -824,34 +804,34 @@
       <!-- 03 -->
       <article class="tile">
         <div class="tile-header">
-          <span>CAP_03 // VISUAL_WEB</span>
+          <span>03 // DESIGN_SYSTEMS_&_WEB</span>
           <span>ZERO BLOAT</span>
         </div>
         <div class="tile-body justify-between">
           <div>
             <span class="text-xs text-[#737373] tracking-[0.12em]">[03]</span>
             <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-[#DCDAD0] mt-2 mb-5">
-              AUDIOVISUAL &amp; WEB BRUTALISTA
+              DESIGN SYSTEMS &amp; WEB
             </h2>
             <p class="text-xs sm:text-sm text-[#737373] leading-relaxed mb-6">
-              Dirección audiovisual, visuales generativos y frontends ultrarrápidos diseñados para convertir y diferenciarse.
+              Interfaces brutalistas de carga instantánea y sistemas de diseño documentados en tokens para precisión total.
             </p>
-            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5">
-              <li>+ MOTION GRÁFICO &amp; PLACAS DE APERTURA</li>
-              <li>+ VISUALES EN VIVO CON HYDRA</li>
-              <li>+ LANDINGS DE ALTA CONVERSIÓN</li>
-              <li>+ CÓDIGO LIMPIO SIN FRAMEWORKS PESADOS</li>
+            <ul class="space-y-2.5 text-xs text-[#DCDAD0] border-t border-[#222222] pt-5 list-none pl-0">
+              <li>+ BRUTALIST UI</li>
+              <li>+ DESIGN TOKENS (JSON / CSS)</li>
+              <li>+ HTML / CSS / JS PURO</li>
+              <li>+ ASTRO &amp; GITHUB PAGES</li>
             </ul>
           </div>
           <div class="mt-8 pt-4 border-t border-[#222222] text-[10px] text-[#737373] uppercase">
-            TOOLS: AFTER EFFECTS / HYDRA / HTML-CSS-JS PURO
+            STACK: TOKENS / VANILLA / ASTRO / GH PAGES
           </div>
         </div>
       </article>
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 05 [05:DEPLOY] — CONTACT / BRIEF
+         WORKSPACE 05 [05:DEPLOY] — CONVERSION & CONTACT
          ==================================================================== -->
     <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="4" aria-label="Workspace 05 Deploy">
       <!-- Left Tile: Direct Commercial Pitch -->
@@ -878,7 +858,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-[#737373]">BASE</span>
-              <span class="text-[#DCDAD0]">ARGENTINA // REMOTO GLOBAL</span>
+              <span class="text-[#DCDAD0]">TRELEW, AR // REMOTO GLOBAL</span>
             </div>
             <div class="flex justify-between">
               <span class="text-[#737373]">RESPUESTA</span>
@@ -888,7 +868,7 @@
         </div>
       </article>
 
-      <!-- Right Tile: Commercial Brief Form -->
+      <!-- Right Tile: Interactive Brief Form -->
       <article class="tile lg:col-span-7">
         <div class="tile-header">
           <span>WIN_09 // TERMINAL_INTAKE.SH</span>
@@ -896,19 +876,11 @@
         </div>
         <div class="tile-body justify-center">
           <form id="deploy-form" class="space-y-4 max-w-2xl w-full">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label for="f-name" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
-                  NOMBRE *
-                </label>
-                <input id="f-name" name="name" type="text" required placeholder="EJ: MARTÍN S." class="shk-input" />
-              </div>
-              <div>
-                <label for="f-contact" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
-                  WHATSAPP / EMAIL *
-                </label>
-                <input id="f-contact" name="contact" type="text" required placeholder="+54 9 ... / HOLA@..." class="shk-input" />
-              </div>
+            <div>
+              <label for="f-name" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                NOMBRE / EMPRESA *
+              </label>
+              <input id="f-name" name="name" type="text" required placeholder="EJ: MARTÍN S. // ESTUDIO X" class="shk-input" />
             </div>
 
             <div>
@@ -916,15 +888,16 @@
                 SERVICIO
               </label>
               <select id="f-service" name="service" class="shk-input cursor-pointer">
-                <option value="Agente WhatsApp + n8n">AGENTE WHATSAPP + N8N (SERVER PROPIO)</option>
-                <option value="Diseño Generativo & Design System">DISEÑO GENERATIVO &amp; DESIGN SYSTEM</option>
-                <option value="Audiovisual & Web Brutalista">AUDIOVISUAL &amp; WEB BRUTALISTA</option>
+                <option value="WhatsApp+n8n Agent">WHATSAPP+N8N AGENT</option>
+                <option value="Identidad & Design System">IDENTIDAD &amp; DESIGN SYSTEM</option>
+                <option value="Producción Audiovisual">PRODUCCIÓN AUDIOVISUAL</option>
+                <option value="Web Brutalista">WEB BRUTALISTA</option>
               </select>
             </div>
 
             <div>
               <label for="f-detail" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
-                DETALLE DEL PROYECTO *
+                MENSAJE / OBJETIVO *
               </label>
               <textarea id="f-detail" name="detail" rows="4" required placeholder="Describí brevemente tu operación, objetivo o plazo..." class="shk-input resize-none"></textarea>
             </div>
@@ -942,7 +915,7 @@
           <!-- Instant Terminal Confirmation Output -->
           <div id="deploy-confirm" class="hidden max-w-2xl w-full p-6 bg-[#000000] border border-[#DCDAD0] shk-chamfer-md">
             <div class="text-xs text-[#DCDAD0] uppercase tracking-[0.1em] mb-3">
-              [200 OK // BRIEF_DISPATCHED]
+              [OK] BRIEF_ENQUEUED -&gt; SHASEKI.PRO
             </div>
             <pre id="deploy-receipt" class="text-xs text-[#737373] leading-relaxed whitespace-pre-wrap m-0"></pre>
             <button id="deploy-reset" type="button" class="mt-6 shk-btn-secondary !py-2 !px-4 !text-[11px]">
@@ -1097,129 +1070,152 @@
 
       function loadLocalImage(file) {
         if (!file || !file.type.startsWith('image/')) return;
-        const objectUrl = URL.createObjectURL(file);
-        heroImg.src = objectUrl;
-        heroImg.classList.remove('hidden');
-        dropzone.classList.add('hidden');
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target && event.target.result) {
+            heroImg.src = event.target.result;
+            heroImg.classList.remove('hidden');
+            dropzone.classList.add('hidden');
+          }
+        };
+        reader.readAsDataURL(file);
       }
 
-      dropzone.addEventListener('click', () => fileInput.click());
+      dropzone.addEventListener('click', () => {
+        fileInput.click();
+      });
+
       fileInput.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-          loadLocalImage(e.target.files[0]);
-        }
+        const file = e.target.files && e.target.files[0];
+        if (file) loadLocalImage(file);
       });
 
       dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('is-dragover');
       });
+
       dropzone.addEventListener('dragleave', () => {
         dropzone.classList.remove('is-dragover');
       });
+
       dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('is-dragover');
-        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
-          loadLocalImage(e.dataTransfer.files[0]);
-        }
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) loadLocalImage(file);
       });
 
       // ----------------------------------------------------------------------
-      // 4. AGENT WORKSPACE TABS & N8N PIPELINE SIMULATOR
+      // 4. WORKSPACE 02: INTERNAL AGENT TABS & N8N PIPELINE SIMULATOR
       // ----------------------------------------------------------------------
       const agentTabs = document.querySelectorAll('.agent-tab');
       const agentPanelDemo = document.getElementById('agent-panel-demo');
       const agentPanelSim = document.getElementById('agent-panel-sim');
-      const simBtn = document.getElementById('sim-run-btn');
       const simStatus = document.getElementById('sim-status');
+      const simRunBtn = document.getElementById('sim-run-btn');
       const simJson = document.getElementById('sim-json');
-      const simNodes = [
-        document.getElementById('node-1'),
-        document.getElementById('node-2'),
-        document.getElementById('node-3'),
-        document.getElementById('node-4')
-      ];
       let simRunning = false;
 
-      agentTabs.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const target = btn.dataset.agentTab;
-          agentTabs.forEach((t) => t.classList.toggle('is-active', t === btn));
+      agentTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.agentTab;
+          agentTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+
           if (target === 'demo') {
             agentPanelDemo.classList.remove('hidden');
             agentPanelSim.classList.add('hidden');
-            simStatus.textContent = 'LIVE';
+            simStatus.textContent = 'WIN_04 // LIVE';
           } else {
             agentPanelDemo.classList.add('hidden');
             agentPanelSim.classList.remove('hidden');
-            simStatus.textContent = simRunning ? 'RUNNING...' : 'IDLE';
+            simStatus.textContent = simRunning ? 'RUNNING...' : 'WIN_04 // SIM';
           }
         });
       });
 
-      const SAMPLE_INTAKES = [
+      const pipelineNodes = [
         {
-          cliente: 'Estudio Nómada',
-          whatsapp: '+54 9 11 4820-9102',
-          servicio: 'WHATSAPP_BOT_N8N',
-          prioridad: 'ALTA',
-          crm_sync: 'ROW_418 // OK',
-          auto_reply: 'ENVIADO (< 2.1s)'
+          id: 'node-1',
+          payload: {
+            step: '01_WEBHOOK_WHATSAPP',
+            from: '+54 9 280 4XX-XXXX',
+            message: 'Hola, necesito automatizar consultas de presupuestos por WhatsApp.',
+            received_at: new Date().toISOString()
+          }
         },
         {
-          cliente: 'Kinetik Audio',
-          whatsapp: '+54 9 280 451-3390',
-          servicio: 'DESIGN_SYSTEM_LLM',
-          prioridad: 'MEDIA',
-          crm_sync: 'ROW_419 // OK',
-          auto_reply: 'ENVIADO (< 1.8s)'
+          id: 'node-2',
+          payload: {
+            step: '02_AI_AGENT_NODE',
+            intent: 'LEAD_QUALIFICATION',
+            service_detected: 'WHATSAPP_N8N_AGENT',
+            priority: 'HIGH',
+            confidence: 0.98
+          }
+        },
+        {
+          id: 'node-3',
+          payload: {
+            step: '03_CRM_JSON_SYNC',
+            database: 'POSTGRES_SELF_HOSTED',
+            record_id: 'SHK-LEAD-0419',
+            status: 'INSERTED_OK'
+          }
+        },
+        {
+          id: 'node-4',
+          payload: {
+            step: '04_AUTO_REPLY_WA',
+            latency_ms: 1420,
+            reply: 'Recibido. Agendamos tu diagnóstico técnico para hoy 18:00 hs.',
+            pipeline_status: 'COMPLETED'
+          }
         }
       ];
-      let sampleIdx = 0;
 
-      simBtn.addEventListener('click', () => {
+      function resetSimNodes() {
+        pipelineNodes.forEach((item) => {
+          const el = document.getElementById(item.id);
+          if (!el) return;
+          el.style.borderColor = '#222222';
+          el.style.color = '#737373';
+          const stateEl = el.querySelector('.node-state');
+          if (stateEl) stateEl.textContent = 'WAITING';
+        });
+      }
+
+      simRunBtn.addEventListener('click', () => {
         if (simRunning) return;
         simRunning = true;
         simStatus.textContent = 'RUNNING...';
-        simStatus.style.color = '#DCDAD0';
+        simRunBtn.textContent = '[EJECUTANDO...]';
+        resetSimNodes();
 
-        simNodes.forEach((el) => {
-          el.style.borderColor = '#222222';
-          el.style.color = '#737373';
-          el.querySelector('.node-state').textContent = 'PENDING';
-        });
-
-        simJson.textContent = '{\n  "status": "RECEIVING_WHATSAPP_WEBHOOK..."\n}';
-
-        const payload = SAMPLE_INTAKES[sampleIdx % SAMPLE_INTAKES.length];
-        sampleIdx++;
-
-        simNodes.forEach((el, idx) => {
+        pipelineNodes.forEach((item, idx) => {
           setTimeout(() => {
-            el.style.borderColor = '#DCDAD0';
-            el.style.color = '#DCDAD0';
-            el.querySelector('.node-state').textContent = 'OK';
-
-            if (idx === simNodes.length - 1) {
-              simStatus.textContent = 'SYNCED_OK';
-              simJson.textContent = JSON.stringify(
-                {
-                  timestamp: new Date().toISOString(),
-                  pipeline: 'WEBHOOK_WA -> AI_EXTRACT -> SERVER_DB -> AUTO_REPLY',
-                  data: payload
-                },
-                null,
-                2
-              );
-              simRunning = false;
+            const el = document.getElementById(item.id);
+            if (el) {
+              el.style.borderColor = '#DCDAD0';
+              el.style.color = '#DCDAD0';
+              const stateEl = el.querySelector('.node-state');
+              if (stateEl) stateEl.textContent = 'OK';
             }
-          }, (idx + 1) * 300);
+
+            item.payload.timestamp = new Date().toISOString();
+            simJson.textContent = JSON.stringify(item.payload, null, 2);
+
+            if (idx === pipelineNodes.length - 1) {
+              simRunning = false;
+              simStatus.textContent = 'WIN_04 // DONE';
+              simRunBtn.textContent = '[EJECUTAR FLUJO DE PRUEBA]';
+            }
+          }, (idx + 1) * 550);
         });
       });
 
       // ----------------------------------------------------------------------
-      // 5. CONTACT / BRIEF FORM (WORKSPACE 05)
+      // 5. WORKSPACE 05: DEPLOY BRIEF FORM
       // ----------------------------------------------------------------------
       const deployForm = document.getElementById('deploy-form');
       const deployConfirm = document.getElementById('deploy-confirm');
@@ -1230,15 +1226,15 @@
         e.preventDefault();
         const formData = new FormData(deployForm);
         const receipt = {
-          status: 'QUEUED_FOR_REVIEW',
-          nombre: formData.get('name'),
-          contacto: formData.get('contact'),
+          status: 'BRIEF_ENQUEUED',
+          target: 'SHASEKI.PRO',
+          nombre_empresa: formData.get('name'),
           servicio: formData.get('service'),
-          detalle: formData.get('detail'),
+          objetivo: formData.get('detail'),
           timestamp: new Date().toISOString()
         };
         deployReceipt.textContent =
-          'BRIEF RECIBIDO EN SHASEKI.PRO.\nRESPUESTA TÉCNICA EN < 24 HS.\n\n' +
+          '[OK] BRIEF_ENQUEUED -> SHASEKI.PRO\n\n' +
           JSON.stringify(receipt, null, 2);
         deployForm.classList.add('hidden');
         deployConfirm.classList.remove('hidden');
@@ -1250,9 +1246,8 @@
         deployForm.classList.remove('hidden');
       });
 
-      window.onload = function () {
-        updateWaybarProgress();
-      };
+      // Initialize Waybar progress on load
+      updateWaybarProgress();
     })();
   </script>
 </body>
