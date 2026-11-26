@@ -51,9 +51,7 @@
     rel="stylesheet"
   />
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
+  <!-- Zero-Bloat Pure CSS (sin CDN runtime de Tailwind) -->
   <style>
     /* ==========================================================================
        SHASEKI DESIGN SYSTEM — TOKENS & FLAT 2D BRUTALIST WAYLAND RULES
@@ -628,10 +626,224 @@
       white-space: nowrap;
       transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear;
     }
-    .chat-chip:hover {
+    .chat-chip:hover:not(:disabled),
+    .chat-chip.is-active {
       background-color: var(--fg-primary);
       color: var(--bg-primary);
       border-color: var(--fg-primary);
+    }
+    .chat-chip:disabled,
+    .shk-btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Keyboard Focus Ring */
+    :focus-visible {
+      outline: 1px solid var(--fg-primary);
+      outline-offset: 2px;
+    }
+
+    /* Reduced Motion Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ==========================================================================
+       ZERO-BLOAT UTILITY LAYER (PURE CSS — NO TAILWIND RUNTIME)
+       ========================================================================== */
+    .block { display: block; }
+    .inline-block { display: inline-block; }
+    .flex { display: flex; }
+    .inline-flex { display: inline-flex; }
+    .grid { display: grid; }
+    .hidden { display: none; }
+
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .inset-0 { inset: 0; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .min-w-\[46px\] { min-width: 46px; }
+    .min-h-\[260px\] { min-height: 260px; }
+    .min-h-\[300px\] { min-height: 300px; }
+    .min-h-\[320px\] { min-height: 320px; }
+    .max-h-\[420px\] { max-height: 420px; }
+    .max-w-sm { max-width: 24rem; }
+    .max-w-2xl { max-width: 42rem; }
+    .max-w-3xl { max-width: 48rem; }
+
+    .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+    .flex-1 { flex: 1 1 0%; }
+    .flex-col { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+    .items-center { align-items: center; }
+    .items-stretch { align-items: stretch; }
+    .justify-start { justify-content: flex-start; }
+    .justify-center { justify-content: center; }
+    .justify-end { justify-content: flex-end; }
+    .justify-between { justify-content: space-between; }
+    .shrink-0 { flex-shrink: 0; }
+
+    .gap-1 { gap: 0.25rem; }
+    .gap-1\.5 { gap: 0.375rem; }
+    .gap-2 { gap: 0.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    .gap-4 { gap: 1rem; }
+
+    .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+    .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.625rem; }
+    .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
+    .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+
+    .m-0 { margin: 0; }
+    .m-4 { margin: 1rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 0.75rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-5 { margin-top: 1.25rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mt-7 { margin-top: 1.75rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-10 { margin-top: 2.5rem; }
+    .mb-1 { margin-bottom: 0.25rem; }
+    .mb-1\.5 { margin-bottom: 0.375rem; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 0.75rem; }
+    .mb-5 { margin-bottom: 1.25rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+
+    .p-0 { padding: 0; }
+    .p-2\.5 { padding: 0.625rem; }
+    .p-3\.5 { padding: 0.875rem; }
+    .p-4 { padding: 1rem; }
+    .p-6 { padding: 1.5rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .pl-0 { padding-left: 0; }
+    .pl-3 { padding-left: 0.75rem; }
+    .pt-2 { padding-top: 0.5rem; }
+    .pt-3 { padding-top: 0.75rem; }
+    .pt-4 { padding-top: 1rem; }
+    .pt-5 { padding-top: 1.25rem; }
+    .pt-6 { padding-top: 1.5rem; }
+    .pb-2 { padding-bottom: 0.5rem; }
+    .pb-3 { padding-bottom: 0.75rem; }
+    .pb-4 { padding-bottom: 1rem; }
+
+    .\!p-0 { padding: 0 !important; }
+    .\!p-3 { padding: 0.75rem !important; }
+    .\!p-4 { padding: 1rem !important; }
+    .\!px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+    .\!px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    .\!px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .\!py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+    .\!py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
+    .\!h-\[22px\] { height: 22px !important; }
+    .\!text-\[11px\] { font-size: 11px !important; }
+
+    .font-mono { font-family: var(--font-mono); }
+    .font-extrabold { font-weight: 800; }
+    .uppercase { text-transform: uppercase; }
+    .text-center { text-align: center; }
+    .no-underline { text-decoration: none; }
+    .hover\:underline:hover { text-decoration: underline; }
+    .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .whitespace-pre-wrap { white-space: pre-wrap; }
+    .list-none { list-style: none; }
+
+    .text-\[10px\] { font-size: 10px; }
+    .text-\[11px\] { font-size: 11px; }
+    .text-\[13px\] { font-size: 13px; }
+    .text-xs { font-size: 0.75rem; line-height: 1rem; }
+    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+
+    .leading-\[1\.0\] { line-height: 1.0; }
+    .leading-\[1\.02\] { line-height: 1.02; }
+    .leading-relaxed { line-height: 1.625; }
+
+    .tracking-\[0\.04em\] { letter-spacing: 0.04em; }
+    .tracking-\[0\.06em\] { letter-spacing: 0.06em; }
+    .tracking-\[0\.08em\] { letter-spacing: 0.08em; }
+    .tracking-\[0\.1em\] { letter-spacing: 0.1em; }
+    .tracking-\[0\.12em\] { letter-spacing: 0.12em; }
+
+    .bg-transparent { background-color: transparent; }
+    .bg-\[\#000000\] { background-color: #000000; }
+    .bg-\[\#0B0B0B\] { background-color: #0B0B0B; }
+    .text-\[\#DCDAD0\] { color: #DCDAD0; }
+    .text-\[\#737373\] { color: #737373; }
+    .hover\:text-\[\#DCDAD0\]:hover { color: #DCDAD0; }
+
+    .border { border-width: 1px; border-style: solid; }
+    .border-0 { border-width: 0; }
+    .border-t { border-top-width: 1px; border-top-style: solid; }
+    .border-b { border-bottom-width: 1px; border-bottom-style: solid; }
+    .border-l-2 { border-left-width: 2px; border-left-style: solid; }
+    .border-dashed { border-style: dashed; }
+    .border-\[\#222222\] { border-color: #222222; }
+    .border-\[\#737373\] { border-color: #737373; }
+    .border-\[\#DCDAD0\] { border-color: #DCDAD0; }
+
+    .overflow-hidden { overflow: hidden; }
+    .overflow-x-auto { overflow-x: auto; }
+    .overflow-y-auto { overflow-y: auto; }
+    .cursor-pointer { cursor: pointer; }
+    .resize-none { resize: none; }
+    .select-none { user-select: none; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    @media (min-width: 640px) {
+      .sm\:inline { display: inline; }
+      .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sm\:mt-9 { margin-top: 2.25rem; }
+      .sm\:text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+      .sm\:text-base { font-size: 1rem; line-height: 1.5rem; }
+      .sm\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
+      .sm\:text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+      .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .sm\:text-5xl { font-size: 3rem; line-height: 1; }
+    }
+
+    @media (min-width: 768px) {
+      .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .md\:col-span-2 { grid-column: span 2 / span 2; }
+      .md\:justify-center { justify-content: center; }
+    }
+
+    @media (min-width: 1024px) {
+      .lg\:inline { display: inline; }
+      .lg\:hidden { display: none; }
+      .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+      .lg\:col-span-5 { grid-column: span 5 / span 5; }
+      .lg\:col-span-6 { grid-column: span 6 / span 6; }
+      .lg\:col-span-7 { grid-column: span 7 / span 7; }
+      .lg\:max-h-none { max-height: none; }
+    }
+
+    @media (min-width: 1280px) {
+      .xl\:text-\[42px\] { font-size: 42px; }
+      .xl\:text-\[46px\] { font-size: 46px; }
     }
   </style>
 </head>
@@ -665,12 +877,12 @@
     </button>
 
     <!-- Center: Workspace Navigation Tabs -->
-    <nav class="flex items-center justify-start md:justify-center gap-1 overflow-x-auto no-scrollbar" aria-label="Wayland Workspaces">
-      <button type="button" class="ws-tab is-active" data-ws="0">[01:INICIO]</button>
-      <button type="button" class="ws-tab" data-ws="1">[02:AGENTE_WA]</button>
-      <button type="button" class="ws-tab" data-ws="2">[03:PROYECTOS]</button>
-      <button type="button" class="ws-tab" data-ws="3">[04:SERVICIOS]</button>
-      <button type="button" class="ws-tab" data-ws="4">[05:CONTACTO]</button>
+    <nav class="flex items-center justify-start md:justify-center gap-1 overflow-x-auto no-scrollbar" role="tablist" aria-label="Wayland Workspaces">
+      <button type="button" role="tab" aria-selected="true" class="ws-tab is-active" data-ws="0">[01:INICIO]</button>
+      <button type="button" role="tab" aria-selected="false" class="ws-tab" data-ws="1">[02:AGENTE_WA]</button>
+      <button type="button" role="tab" aria-selected="false" class="ws-tab" data-ws="2">[03:PROYECTOS]</button>
+      <button type="button" role="tab" aria-selected="false" class="ws-tab" data-ws="3">[04:SERVICIOS]</button>
+      <button type="button" role="tab" aria-selected="false" class="ws-tab" data-ws="4">[05:CONTACTO]</button>
     </nav>
 
     <!-- Right: Grain Toggle & Scroll Percentage -->
@@ -759,7 +971,7 @@
           <!-- Bottom Technical Status Strip -->
           <div class="mt-8 pt-4 border-t border-[#222222] flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em]">
             <span class="text-[#DCDAD0]">STATUS: ONLINE // TRELEW, AR // WAYLAND_UI v2.4</span>
-            <span class="text-[#737373] hidden lg:inline">RUEDA / FLECHAS / BARRA INFERIOR →</span>
+            <span class="text-[#737373] hidden lg:inline">TECLAS 1–5 / ← → / RUEDA →</span>
             <span class="text-[#737373] lg:hidden">SCROLL VERTICAL ↓</span>
           </div>
         </div>
@@ -800,7 +1012,7 @@
           </div>
 
           <div class="mt-6 flex flex-wrap items-center gap-4">
-            <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="4">
+            <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="4" data-contact-tab-target="brief" data-preselect-service="WhatsApp+n8n Agent">
               [SOLICITAR IMPLEMENTACIÓN]
             </button>
             <a
@@ -818,11 +1030,11 @@
       <!-- Right Window: Internal Tabbed Wayland Window -->
       <article class="tile lg:col-span-6">
         <div class="tile-header !px-2 gap-2">
-          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
-            <button type="button" class="agent-tab is-active" data-agent-tab="demo">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" role="tablist" aria-label="Paneles de Agente">
+            <button type="button" role="tab" aria-selected="true" class="agent-tab is-active" data-agent-tab="demo">
               [LIVE_DEMO: AI-AUTOMATION]
             </button>
-            <button type="button" class="agent-tab" data-agent-tab="sim">
+            <button type="button" role="tab" aria-selected="false" class="agent-tab" data-agent-tab="sim">
               [SIMULADOR_N8N]
             </button>
           </div>
@@ -842,11 +1054,14 @@
               [ABRIR EN NUEVA PESTAÑA ↗]
             </a>
           </div>
-          <div class="flex-1 w-full min-h-[300px] border border-[#222222] bg-[#000000] overflow-hidden">
+          <div class="relative flex-1 w-full min-h-[300px] border border-[#222222] bg-[#000000] overflow-hidden">
+            <div class="absolute inset-0 flex items-center justify-center text-[10px] text-[#737373] uppercase tracking-[0.08em] select-none">
+              [CARGANDO LIVE DEMO // AI-AUTOMATION-FINAL...]
+            </div>
             <iframe
               src="https://shaseki.github.io/AI-Automation-Final/"
               title="SHASEKI AI Automation Final — Live Demo"
-              class="w-full h-full min-h-[300px] border-0 bg-[#000000]"
+              class="relative w-full h-full min-h-[300px] border-0 bg-transparent"
               loading="lazy"
             ></iframe>
           </div>
@@ -855,15 +1070,39 @@
         <!-- Tab 2: Interactive N8N Pipeline Simulator -->
         <div id="agent-panel-sim" class="tile-body hidden justify-between bg-[#000000]">
           <div>
-            <div class="flex items-center justify-between gap-2 pb-4 border-b border-[#222222]">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#222222]">
               <span class="text-[11px] text-[#737373] uppercase">N8N_PIPELINE :: CLIENT_INTAKE</span>
               <button id="sim-run-btn" type="button" class="shk-btn-primary shk-chamfer-sm !py-2 !px-3 !text-[11px]">
                 [EJECUTAR FLUJO DE PRUEBA]
               </button>
             </div>
 
+            <!-- Interactive Scenario Presets & Custom Message -->
+            <div class="mt-3 space-y-2">
+              <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                <button type="button" class="chat-chip sim-preset-btn is-active" data-sim-preset="presupuesto">
+                  [PRESUPUESTO_WA]
+                </button>
+                <button type="button" class="chat-chip sim-preset-btn" data-sim-preset="turno">
+                  [AGENDA_TURNO]
+                </button>
+                <button type="button" class="chat-chip sim-preset-btn" data-sim-preset="soporte">
+                  [SOPORTE_N8N]
+                </button>
+              </div>
+              <label for="sim-custom-msg" class="sr-only">Mensaje entrante simulado de WhatsApp</label>
+              <input
+                id="sim-custom-msg"
+                type="text"
+                maxlength="200"
+                value="Hola, necesito automatizar consultas de presupuestos por WhatsApp."
+                placeholder="Escribí un mensaje simulado de cliente..."
+                class="shk-input"
+              />
+            </div>
+
             <!-- Pipeline Nodes -->
-            <div class="mt-4 space-y-2 text-xs">
+            <div class="mt-3 space-y-2 text-xs">
               <div id="node-1" class="p-2.5 border border-[#222222] text-[#737373] flex justify-between">
                 <span>01 // WEBHOOK_WHATSAPP</span>
                 <span class="node-state">WAITING</span>
@@ -883,11 +1122,11 @@
             </div>
 
             <!-- Live JSON Output -->
-            <div class="mt-4 p-4 bg-[#0B0B0B] border border-[#222222]">
+            <div class="mt-3 p-3.5 bg-[#0B0B0B] border border-[#222222]">
               <div class="text-[10px] text-[#737373] uppercase mb-2">// CLIENT_INTAKE_LOG.JSON</div>
               <pre id="sim-json" class="text-[11px] leading-relaxed text-[#DCDAD0] overflow-x-auto m-0">{
   "status": "READY",
-  "hint": "Presioná [EJECUTAR FLUJO DE PRUEBA] para simular la entrada de un cliente."
+  "hint": "Elegí un escenario o escribí un mensaje y presioná [EJECUTAR FLUJO DE PRUEBA]."
 }</pre>
             </div>
           </div>
@@ -979,7 +1218,7 @@
           </div>
           <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
             <span class="text-[10px] text-[#737373] uppercase">HYDRA // LIVE STAGE</span>
-            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="4">
+            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="4" data-contact-tab-target="brief" data-preselect-service="Producción Audiovisual">
               [CONSULTAR →]
             </button>
           </div>
@@ -1119,9 +1358,14 @@
           </div>
 
           <div class="mt-10 pt-6 border-t border-[#222222] space-y-3 text-xs uppercase tracking-[0.08em]">
-            <div class="flex justify-between">
+            <div class="flex items-center justify-between gap-2">
               <span class="text-[#737373]">EMAIL</span>
-              <a href="mailto:hola@shaseki.pro" class="text-[#DCDAD0] hover:underline">HOLA@SHASEKI.PRO</a>
+              <div class="flex items-center gap-2">
+                <a href="mailto:hola@shaseki.pro" class="text-[#DCDAD0] hover:underline">HOLA@SHASEKI.PRO</a>
+                <button type="button" id="copy-email-btn" class="chat-chip" title="Copiar dirección de email">
+                  [COPIAR]
+                </button>
+              </div>
             </div>
             <div class="flex justify-between">
               <span class="text-[#737373]">BASE</span>
@@ -1138,11 +1382,11 @@
       <!-- Right Tile: Tabbed Live Bot Chat & Brief Form -->
       <article class="tile lg:col-span-7">
         <div class="tile-header !px-2 gap-2">
-          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
-            <button type="button" class="agent-tab contact-tab is-active" data-contact-tab="chat">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar" role="tablist" aria-label="Canales de contacto">
+            <button type="button" role="tab" aria-selected="true" class="agent-tab contact-tab is-active" data-contact-tab="chat">
               [CHAT_BOT // LIVE]
             </button>
-            <button type="button" class="agent-tab contact-tab" data-contact-tab="brief">
+            <button type="button" role="tab" aria-selected="false" class="agent-tab contact-tab" data-contact-tab="brief">
               [ENVIAR_BRIEF]
             </button>
           </div>
@@ -1289,11 +1533,11 @@
     <div class="flex items-center gap-3">
       <span id="tmux-counter" class="text-[11px] text-[#DCDAD0] tracking-[0.08em]">01 / 05</span>
       <div class="flex items-center gap-1.5" role="tablist" aria-label="Progreso de secciones">
-        <button type="button" class="tmux-seg is-active" data-seg="0" aria-label="Ir a Inicio"></button>
-        <button type="button" class="tmux-seg" data-seg="1" aria-label="Ir a Agente WhatsApp"></button>
-        <button type="button" class="tmux-seg" data-seg="2" aria-label="Ir a Proyectos"></button>
-        <button type="button" class="tmux-seg" data-seg="3" aria-label="Ir a Servicios"></button>
-        <button type="button" class="tmux-seg" data-seg="4" aria-label="Ir a Contacto"></button>
+        <button type="button" role="tab" aria-selected="true" class="tmux-seg is-active" data-seg="0" aria-label="Ir a Inicio"></button>
+        <button type="button" role="tab" aria-selected="false" class="tmux-seg" data-seg="1" aria-label="Ir a Agente WhatsApp"></button>
+        <button type="button" role="tab" aria-selected="false" class="tmux-seg" data-seg="2" aria-label="Ir a Proyectos"></button>
+        <button type="button" role="tab" aria-selected="false" class="tmux-seg" data-seg="3" aria-label="Ir a Servicios"></button>
+        <button type="button" role="tab" aria-selected="false" class="tmux-seg" data-seg="4" aria-label="Ir a Contacto"></button>
       </div>
     </div>
 
@@ -1314,13 +1558,13 @@
       'use strict';
 
       // ----------------------------------------------------------------------
-      // 0. CONFIGURACIÓN DE INTEGRACIONES (EDITAR ANTES DE PRODUCCIÓN)
+      // 0. CONFIGURACIÓN DE INTEGRACIONES
       // ----------------------------------------------------------------------
       const SHASEKI_CONFIG = {
-        whatsappNumber: '', // Ej: '5492804000000' (código de país + área, sin + ni espacios)
+        whatsappNumber: '15551680458',
         whatsappDefaultText: 'Hola SHASEKI, vi tu portfolio shaseki.pro y quiero hacer una consulta.',
-        chatWebhookUrl: '', // Ej: 'https://n8n.shaseki.pro/webhook/portfolio-chat'
-        briefWebhookUrl: '' // Ej: 'https://n8n.shaseki.pro/webhook/client-intake'
+        chatWebhookUrl: 'https://n8n.shaseki.pro/webhook/portfolio-chat',
+        briefWebhookUrl: 'https://n8n.shaseki.pro/webhook/client-intake'
       };
 
       const track = document.getElementById('workspace-track');
@@ -1337,6 +1581,7 @@
       const tmuxCounter = document.getElementById('tmux-counter');
       const tmuxSegs = Array.from(document.querySelectorAll('.tmux-seg'));
 
+      const WS_SLUGS = ['inicio', 'agente', 'proyectos', 'servicios', 'contacto'];
       const WS_NEXT_LABELS = [
         '[SIGUIENTE: AGENTE WHATSAPP →]',
         '[SIGUIENTE: PROYECTOS →]',
@@ -1351,6 +1596,20 @@
         return window.innerWidth >= 1024;
       }
 
+      function prefersReducedMotion() {
+        return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      }
+
+      function parseHashIndex() {
+        const raw = (window.location.hash || '').replace(/^#\/?/, '').toLowerCase();
+        if (!raw) return null;
+        const slugIdx = WS_SLUGS.indexOf(raw);
+        if (slugIdx !== -1) return slugIdx;
+        const num = parseInt(raw, 10);
+        if (!Number.isNaN(num) && num >= 1 && num <= workspaces.length) return num - 1;
+        return null;
+      }
+
       // ----------------------------------------------------------------------
       // 1. HYBRID NAVIGATION ENGINE (DESKTOP HORIZONTAL PEEK / MOBILE VERTICAL)
       // ----------------------------------------------------------------------
@@ -1359,12 +1618,20 @@
 
         // Sync Waybar Tabs
         tabs.forEach((tab, idx) => {
-          tab.classList.toggle('is-active', idx === activeIndex);
+          const active = idx === activeIndex;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
         });
 
         // Sync Workspace Peek Highlight
         workspaces.forEach((ws, idx) => {
-          ws.classList.toggle('is-current', idx === activeIndex);
+          const current = idx === activeIndex;
+          ws.classList.toggle('is-current', current);
+          if (current) {
+            ws.setAttribute('aria-current', 'region');
+          } else {
+            ws.removeAttribute('aria-current');
+          }
         });
 
         // Sync Tmux Bar
@@ -1372,8 +1639,18 @@
         tmuxPrev.disabled = activeIndex === 0;
         tmuxNext.textContent = WS_NEXT_LABELS[activeIndex] || '[SIGUIENTE →]';
         tmuxSegs.forEach((seg, idx) => {
-          seg.classList.toggle('is-active', idx === activeIndex);
+          const active = idx === activeIndex;
+          seg.classList.toggle('is-active', active);
+          seg.setAttribute('aria-selected', String(active));
         });
+
+        // Sync URL hash without cluttering history
+        const slug = WS_SLUGS[activeIndex];
+        if (slug && window.location.hash !== `#${slug}`) {
+          try {
+            history.replaceState(null, '', `#${slug}`);
+          } catch (_) {}
+        }
       }
 
       function syncScrollState() {
@@ -1412,20 +1689,22 @@
         }
       }
 
-      function scrollToWorkspace(index) {
+      function scrollToWorkspace(index, instant) {
         const clamped = Math.max(0, Math.min(index, workspaces.length - 1));
         const targetWs = workspaces[clamped];
         if (!targetWs) return;
 
+        const behavior = instant || prefersReducedMotion() ? 'auto' : 'smooth';
+
         if (isDesktop()) {
           track.scrollTo({
             left: targetWs.offsetLeft,
-            behavior: 'smooth'
+            behavior
           });
         } else {
           track.scrollTo({
             top: targetWs.offsetTop,
-            behavior: 'smooth'
+            behavior
           });
         }
       }
@@ -1449,10 +1728,17 @@
         });
       });
 
-      // CTA Nav Jumps
+      // CTA Nav Jumps (with optional preselection for Brief tab & service)
       navJumps.forEach((btn) => {
         btn.addEventListener('click', () => {
           const targetWs = parseInt(btn.dataset.targetWs, 10);
+          if (btn.dataset.contactTabTarget && typeof setContactTab === 'function') {
+            setContactTab(btn.dataset.contactTabTarget);
+          }
+          if (btn.dataset.preselectService) {
+            const serviceSelect = document.getElementById('f-service');
+            if (serviceSelect) serviceSelect.value = btn.dataset.preselectService;
+          }
           if (!Number.isNaN(targetWs)) scrollToWorkspace(targetWs);
         });
       });
@@ -1525,17 +1811,30 @@
         track.classList.remove('is-dragging');
       });
 
-      // Keyboard navigation (ArrowLeft / ArrowRight on desktop)
+      // Keyboard navigation (ArrowLeft / ArrowRight & keys 1-5 on desktop)
       window.addEventListener('keydown', (e) => {
         if (!isDesktop()) return;
-        const tag = document.activeElement && document.activeElement.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        const activeEl = document.activeElement;
+        const tag = activeEl && activeEl.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (activeEl && activeEl.isContentEditable)) return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+
         if (e.key === 'ArrowRight') {
           e.preventDefault();
           scrollToWorkspace(activeIndex + 1);
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
           scrollToWorkspace(activeIndex - 1);
+        } else if (e.key >= '1' && e.key <= String(workspaces.length)) {
+          e.preventDefault();
+          scrollToWorkspace(parseInt(e.key, 10) - 1);
+        }
+      });
+
+      window.addEventListener('hashchange', () => {
+        const hashIdx = parseHashIndex();
+        if (hashIdx !== null && hashIdx !== activeIndex) {
+          scrollToWorkspace(hashIdx);
         }
       });
 
@@ -1600,7 +1899,7 @@
       });
 
       // ----------------------------------------------------------------------
-      // 4. WORKSPACE 02: INTERNAL AGENT TABS & N8N PIPELINE SIMULATOR
+      // 4. WORKSPACE 02: INTERNAL AGENT TABS & INTERACTIVE N8N SIMULATOR
       // ----------------------------------------------------------------------
       const agentTabs = document.querySelectorAll('[data-agent-tab]');
       const agentPanelDemo = document.getElementById('agent-panel-demo');
@@ -1608,12 +1907,42 @@
       const simStatus = document.getElementById('sim-status');
       const simRunBtn = document.getElementById('sim-run-btn');
       const simJson = document.getElementById('sim-json');
+      const simCustomMsg = document.getElementById('sim-custom-msg');
+      const simPresetBtns = document.querySelectorAll('.sim-preset-btn');
       let simRunning = false;
+
+      const SIM_PRESETS = {
+        presupuesto: {
+          message: 'Hola, necesito automatizar consultas de presupuestos por WhatsApp.',
+          intent: 'LEAD_QUALIFICATION',
+          service: 'WHATSAPP_N8N_AGENT',
+          priority: 'HIGH',
+          reply: 'Recibido. Agendamos tu diagnóstico técnico para hoy 18:00 hs.'
+        },
+        turno: {
+          message: 'Buenas, quiero reservar un turno disponible para esta semana.',
+          intent: 'BOOKING_REQUEST',
+          service: 'CALENDAR_SYNC_BOT',
+          priority: 'MEDIUM',
+          reply: 'Tengo disponibilidad jueves 10:30 hs o viernes 16:00 hs. ¿Cuál preferís?'
+        },
+        soporte: {
+          message: 'El webhook de nuestro CRM devolvió error 502 en producción.',
+          intent: 'TECH_SUPPORT',
+          service: 'INFRA_MONITORING',
+          priority: 'URGENT',
+          reply: 'Alerta registrada (#INC-094). Verificando logs del contenedor n8n ahora.'
+        }
+      };
 
       agentTabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const target = tab.dataset.agentTab;
-          agentTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+          agentTabs.forEach((t) => {
+            const active = t === tab;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', String(active));
+          });
 
           if (target === 'demo') {
             agentPanelDemo.classList.remove('hidden');
@@ -1627,49 +1956,40 @@
         });
       });
 
-      const pipelineNodes = [
-        {
-          id: 'node-1',
-          payload: {
-            step: '01_WEBHOOK_WHATSAPP',
-            from: '+54 9 280 4XX-XXXX',
-            message: 'Hola, necesito automatizar consultas de presupuestos por WhatsApp.',
-            received_at: new Date().toISOString()
-          }
-        },
-        {
-          id: 'node-2',
-          payload: {
-            step: '02_AI_AGENT_NODE',
-            intent: 'LEAD_QUALIFICATION',
-            service_detected: 'WHATSAPP_N8N_AGENT',
-            priority: 'HIGH',
-            confidence: 0.98
-          }
-        },
-        {
-          id: 'node-3',
-          payload: {
-            step: '03_CRM_JSON_SYNC',
-            database: 'POSTGRES_SELF_HOSTED',
-            record_id: 'SHK-LEAD-0419',
-            status: 'INSERTED_OK'
-          }
-        },
-        {
-          id: 'node-4',
-          payload: {
-            step: '04_AUTO_REPLY_WA',
-            latency_ms: 1420,
-            reply: 'Recibido. Agendamos tu diagnóstico técnico para hoy 18:00 hs.',
-            pipeline_status: 'COMPLETED'
-          }
+      simPresetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (simRunning) return;
+          const preset = SIM_PRESETS[btn.dataset.simPreset];
+          if (!preset) return;
+          simPresetBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+          simCustomMsg.value = preset.message;
+        });
+      });
+
+      function classifySimMessage(msg) {
+        const q = msg.toLowerCase();
+        if (q.includes('turno') || q.includes('reserv') || q.includes('agenda') || q.includes('hora')) {
+          return SIM_PRESETS.turno;
         }
-      ];
+        if (q.includes('error') || q.includes('soporte') || q.includes('falla') || q.includes('502')) {
+          return SIM_PRESETS.soporte;
+        }
+        if (q.includes('presupuesto') || q.includes('precio') || q.includes('cotiz') || q.includes('whatsapp')) {
+          return SIM_PRESETS.presupuesto;
+        }
+        return {
+          intent: 'GENERAL_INQUIRY',
+          service: 'WHATSAPP_N8N_AGENT',
+          priority: 'NORMAL',
+          reply: 'Recibido y estructurado. Un especialista de SHASEKI continúa tu consulta.'
+        };
+      }
+
+      const simNodeIds = ['node-1', 'node-2', 'node-3', 'node-4'];
 
       function resetSimNodes() {
-        pipelineNodes.forEach((item) => {
-          const el = document.getElementById(item.id);
+        simNodeIds.forEach((id) => {
+          const el = document.getElementById(id);
           if (!el) return;
           el.style.borderColor = '#222222';
           el.style.color = '#737373';
@@ -1680,12 +2000,58 @@
 
       simRunBtn.addEventListener('click', () => {
         if (simRunning) return;
+        const incomingMsg = (simCustomMsg.value || '').trim() || SIM_PRESETS.presupuesto.message;
+        const match = classifySimMessage(incomingMsg);
+        const recordId = 'SHK-LEAD-' + String(Math.floor(1000 + Math.random() * 9000));
+
+        const dynamicSteps = [
+          {
+            id: 'node-1',
+            payload: {
+              step: '01_WEBHOOK_WHATSAPP',
+              from: '+54 9 280 4XX-XXXX',
+              message: incomingMsg,
+              received_at: new Date().toISOString()
+            }
+          },
+          {
+            id: 'node-2',
+            payload: {
+              step: '02_AI_AGENT_NODE',
+              intent: match.intent,
+              service_detected: match.service,
+              priority: match.priority,
+              confidence: 0.98
+            }
+          },
+          {
+            id: 'node-3',
+            payload: {
+              step: '03_CRM_JSON_SYNC',
+              database: 'POSTGRES_SELF_HOSTED',
+              record_id: recordId,
+              status: 'INSERTED_OK'
+            }
+          },
+          {
+            id: 'node-4',
+            payload: {
+              step: '04_AUTO_REPLY_WA',
+              latency_ms: 1180,
+              reply: match.reply,
+              pipeline_status: 'COMPLETED'
+            }
+          }
+        ];
+
         simRunning = true;
+        simRunBtn.disabled = true;
+        simPresetBtns.forEach((b) => { b.disabled = true; });
         simStatus.textContent = 'RUNNING...';
         simRunBtn.textContent = '[EJECUTANDO...]';
         resetSimNodes();
 
-        pipelineNodes.forEach((item, idx) => {
+        dynamicSteps.forEach((item, idx) => {
           setTimeout(() => {
             const el = document.getElementById(item.id);
             if (el) {
@@ -1698,12 +2064,14 @@
             item.payload.timestamp = new Date().toISOString();
             simJson.textContent = JSON.stringify(item.payload, null, 2);
 
-            if (idx === pipelineNodes.length - 1) {
+            if (idx === dynamicSteps.length - 1) {
               simRunning = false;
+              simRunBtn.disabled = false;
+              simPresetBtns.forEach((b) => { b.disabled = false; });
               simStatus.textContent = 'WIN_04 // DONE';
               simRunBtn.textContent = '[EJECUTAR FLUJO DE PRUEBA]';
             }
-          }, (idx + 1) * 550);
+          }, (idx + 1) * 480);
         });
       });
 
@@ -1726,26 +2094,49 @@
         });
       }
 
+      // Copy Email Button
+      const copyEmailBtn = document.getElementById('copy-email-btn');
+      if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText('hola@shaseki.pro');
+            copyEmailBtn.textContent = '[COPIADO ✓]';
+          } catch (_) {
+            copyEmailBtn.textContent = '[HOLA@SHASEKI.PRO]';
+          }
+          setTimeout(() => {
+            copyEmailBtn.textContent = '[COPIAR]';
+          }, 2000);
+        });
+      }
+
       // Internal Contact Tabs (Live Chat vs Brief Form)
       const contactTabs = document.querySelectorAll('[data-contact-tab]');
       const contactPanelChat = document.getElementById('contact-panel-chat');
       const contactPanelBrief = document.getElementById('contact-panel-brief');
       const contactWinStatus = document.getElementById('contact-win-status');
 
+      function setContactTab(target) {
+        contactTabs.forEach((t) => {
+          const active = t.dataset.contactTab === target;
+          t.classList.toggle('is-active', active);
+          t.setAttribute('aria-selected', String(active));
+        });
+
+        if (target === 'chat') {
+          contactPanelChat.classList.remove('hidden');
+          contactPanelBrief.classList.add('hidden');
+          contactWinStatus.textContent = SHASEKI_CONFIG.chatWebhookUrl ? 'WIN_09 // BOT_LIVE' : 'WIN_09 // BOT_PREVIEW';
+        } else {
+          contactPanelChat.classList.add('hidden');
+          contactPanelBrief.classList.remove('hidden');
+          contactWinStatus.textContent = 'WIN_09 // BRIEF';
+        }
+      }
+
       contactTabs.forEach((tab) => {
         tab.addEventListener('click', () => {
-          const target = tab.dataset.contactTab;
-          contactTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
-
-          if (target === 'chat') {
-            contactPanelChat.classList.remove('hidden');
-            contactPanelBrief.classList.add('hidden');
-            contactWinStatus.textContent = SHASEKI_CONFIG.chatWebhookUrl ? 'WIN_09 // BOT_LIVE' : 'WIN_09 // BOT_PREVIEW';
-          } else {
-            contactPanelChat.classList.add('hidden');
-            contactPanelBrief.classList.remove('hidden');
-            contactWinStatus.textContent = 'WIN_09 // BRIEF';
-          }
+          setContactTab(tab.dataset.contactTab);
         });
       });
 
@@ -1784,7 +2175,7 @@
       function appendChatMessage(senderLabel, text, isUser) {
         const wrapper = document.createElement('div');
         wrapper.className = isUser
-          ? 'border-l-2 border-[#737373] pl-3 py-0.5 bg-[#000000]/40'
+          ? 'border-l-2 border-[#737373] pl-3 py-0.5 bg-[#000000]'
           : 'border-l-2 border-[#DCDAD0] pl-3 py-0.5';
 
         const header = document.createElement('div');
@@ -1985,7 +2376,11 @@
         deployForm.classList.remove('hidden');
       });
 
-      // Initialize UI state on load
+      // Initialize UI state on load (respect initial URL hash if present)
+      const initialHashIdx = parseHashIndex();
+      if (initialHashIdx !== null && initialHashIdx > 0) {
+        scrollToWorkspace(initialHashIdx, true);
+      }
       syncScrollState();
     })();
   </script>
