@@ -16,8 +16,6 @@
   <meta name="apple-mobile-web-app-title" content="SHASEKI" />
   <meta name="application-name" content="SHASEKI" />
 
-  
-  
   <!-- Google Fonts: Unbounded (700, 800, 900) & JetBrains Mono (400, 500) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,6 +43,7 @@
       --font-mono: 'JetBrains Mono', monospace;
 
       --waybar-h: 38px;
+      --tmux-h: 38px;
       --tile-gap: 8px;
       --chamfer-sm: 10px;
       --chamfer-md: 16px;
@@ -164,7 +163,9 @@
     }
 
     /* ==========================================================================
-       HORIZONTAL SCROLL TRACK & WORKSPACES
+       RESPONSIVE WORKSPACE TRACK
+       - Mobile (< 1024px): Native vertical scroll
+       - Desktop (>= 1024px): Horizontal scroll + 92vw Peek Effect + Tmux Bar
        ========================================================================== */
     #workspace-track {
       position: fixed;
@@ -174,30 +175,154 @@
       bottom: 0;
       z-index: 10;
       display: flex;
-      flex-direction: row;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      cursor: grab;
-    }
-    #workspace-track::-webkit-scrollbar {
-      display: none;
-    }
-    #workspace-track.is-dragging {
-      cursor: grabbing;
-      user-select: none;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
     }
 
     .workspace {
-      flex: 0 0 100vw;
-      width: 100vw;
-      height: calc(100vh - var(--waybar-h));
+      flex: 0 0 auto;
+      width: 100%;
+      min-height: calc(100vh - var(--waybar-h));
       padding: var(--tile-gap);
       display: grid;
       gap: var(--tile-gap);
-      overflow-y: auto;
-      overflow-x: hidden;
+      transition: opacity 200ms linear;
+    }
+
+    /* Desktop Horizontal Mode (>= 1024px) */
+    @media (min-width: 1024px) {
+      #workspace-track {
+        bottom: var(--tmux-h);
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        cursor: grab;
+      }
+      #workspace-track::-webkit-scrollbar {
+        display: none;
+      }
+      #workspace-track.is-dragging {
+        cursor: grabbing;
+        scroll-snap-type: none;
+        user-select: none;
+      }
+
+      /* Peek Effect: 92vw so the next workspace physically peeks on the right */
+      .workspace {
+        flex: 0 0 92vw;
+        width: 92vw;
+        height: calc(100vh - var(--waybar-h) - var(--tmux-h));
+        min-height: 0;
+        overflow: hidden;
+        scroll-snap-align: start;
+        opacity: 0.42;
+        cursor: pointer;
+      }
+      .workspace:last-child {
+        flex: 0 0 100vw;
+        width: 100vw;
+      }
+      .workspace.is-current {
+        opacity: 1;
+        cursor: default;
+      }
+      .workspace:not(.is-current):hover {
+        opacity: 0.78;
+      }
+    }
+
+    /* ==========================================================================
+       FIXED BOTTOM TMUX NAVIGATION BAR (DESKTOP ONLY, 38px)
+       ========================================================================== */
+    #tmux-bar {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      #tmux-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--tmux-h);
+        background-color: var(--bg-primary);
+        border-top: 1px solid var(--border-subtle);
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: 0 12px;
+        gap: 12px;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        user-select: none;
+      }
+    }
+
+    .tmux-btn {
+      height: 26px;
+      padding: 0 12px;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--fg-primary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear, opacity 100ms linear;
+    }
+    .tmux-btn:hover:not(:disabled) {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border-color: var(--fg-primary);
+    }
+    .tmux-btn:disabled {
+      opacity: 0.28;
+      cursor: not-allowed;
+    }
+
+    .tmux-btn-next {
+      height: 26px;
+      padding: 0 14px;
+      border: 1px solid var(--fg-primary);
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 100ms linear, color 100ms linear;
+    }
+    .tmux-btn-next:hover {
+      background-color: var(--bg-primary);
+      color: var(--fg-primary);
+    }
+
+    .tmux-seg {
+      width: 28px;
+      height: 6px;
+      background-color: var(--border-subtle);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background-color 120ms linear;
+    }
+    .tmux-seg:hover {
+      background-color: var(--fg-muted);
+    }
+    .tmux-seg.is-active {
+      background-color: var(--fg-primary);
     }
 
     /* ==========================================================================
@@ -241,7 +366,7 @@
 
     @media (min-width: 1024px) {
       .tile-body {
-        padding: 28px 32px;
+        padding: 24px 28px;
       }
     }
 
@@ -366,16 +491,19 @@
     /* Custom Thin Scrollbars */
     .tile-body::-webkit-scrollbar,
     .workspace::-webkit-scrollbar,
+    #workspace-track::-webkit-scrollbar,
     .no-scrollbar::-webkit-scrollbar {
       width: 4px;
       height: 0px;
     }
     .tile-body::-webkit-scrollbar-track,
-    .workspace::-webkit-scrollbar-track {
+    .workspace::-webkit-scrollbar-track,
+    #workspace-track::-webkit-scrollbar-track {
       background: #000000;
     }
     .tile-body::-webkit-scrollbar-thumb,
-    .workspace::-webkit-scrollbar-thumb {
+    .workspace::-webkit-scrollbar-thumb,
+    #workspace-track::-webkit-scrollbar-thumb {
       background: #222222;
     }
   </style>
@@ -396,7 +524,7 @@
   </div>
 
   <!-- ======================================================================
-       FIXED TOP WAYBAR (38px)
+       FIXED TOP WAYBAR (38px) — SPANISH BUSINESS LABELS
        ====================================================================== -->
   <header id="waybar">
     <!-- Left: Brand text SHASEKI in Unbounded 900 ONLY -->
@@ -411,14 +539,14 @@
 
     <!-- Center: Workspace Navigation Tabs -->
     <nav class="flex items-center justify-start md:justify-center gap-1 overflow-x-auto no-scrollbar" aria-label="Wayland Workspaces">
-      <button type="button" class="ws-tab is-active" data-ws="0">[01:CORE]</button>
-      <button type="button" class="ws-tab" data-ws="1">[02:AGENT]</button>
-      <button type="button" class="ws-tab" data-ws="2">[03:WORKS]</button>
-      <button type="button" class="ws-tab" data-ws="3">[04:STACK]</button>
-      <button type="button" class="ws-tab" data-ws="4">[05:DEPLOY]</button>
+      <button type="button" class="ws-tab is-active" data-ws="0">[01:INICIO]</button>
+      <button type="button" class="ws-tab" data-ws="1">[02:AGENTE_WA]</button>
+      <button type="button" class="ws-tab" data-ws="2">[03:PROYECTOS]</button>
+      <button type="button" class="ws-tab" data-ws="3">[04:SERVICIOS]</button>
+      <button type="button" class="ws-tab" data-ws="4">[05:CONTACTO]</button>
     </nav>
 
-    <!-- Right: Grain Toggle & Horizontal Scroll Percentage -->
+    <!-- Right: Grain Toggle & Scroll Percentage -->
     <div class="flex items-center gap-1.5 shrink-0">
       <button id="grain-toggle" type="button" class="waybar-btn" title="Activar/Desactivar grano analógico">
         [GRAIN: ON]
@@ -430,15 +558,15 @@
   </header>
 
   <!-- ======================================================================
-       HORIZONTAL SCROLL TRACK (5 FULL-VIEWPORT WORKSPACES)
+       WORKSPACE TRACK (HORIZONTAL PEEK ON DESKTOP / VERTICAL ON MOBILE)
        ====================================================================== -->
   <main id="workspace-track">
 
     <!-- ====================================================================
-         WORKSPACE 01 [01:CORE] — HOME
+         WORKSPACE 01 [01:INICIO] — HOME
          ==================================================================== -->
-    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="0" aria-label="Workspace 01 Core">
-      <!-- Left Window: Dedicated exclusively to SHASEKI _ VERTICAL FINALE_2.png -->
+    <section class="workspace is-current grid-cols-1 lg:grid-cols-12" data-ws-index="0" aria-label="Workspace 01 Inicio">
+      <!-- Left Window: Dedicated exclusively to ./logo.png -->
       <article class="tile lg:col-span-5">
         <div class="tile-header">
           <span>WIN_01 // IDENTITY_MASTER</span>
@@ -453,13 +581,13 @@
             class="select-none"
           />
 
-          <!-- Brutalist fallback ONLY if ./SHASEKI _ VERTICAL FINALE_2.png is not mounted in sandbox -->
+          <!-- Brutalist fallback ONLY if ./logo.png is not mounted in sandbox -->
           <div
             id="concept-dropzone"
             class="hidden absolute inset-0 bg-[#000000] p-6 flex flex-col items-center justify-center text-center border border-dashed border-[#222222] m-4 cursor-pointer"
           >
             <div class="text-[11px] text-[#DCDAD0] tracking-[0.08em] uppercase leading-relaxed max-w-sm mb-5">
-              [IMAGEN LOCAL NO MONTADA EN PREVIEW — CLIC O ARRASTRÁ &quot;SHASEKI _ VERTICAL FINALE_2.png&quot;]
+              [IMAGEN LOCAL NO MONTADA EN PREVIEW — CLIC O ARRASTRÁ &quot;logo.png&quot;]
             </div>
             <span class="shk-btn-secondary !py-2 !px-4 !text-[11px]">
               [SELECCIONAR ARCHIVO]
@@ -473,24 +601,25 @@
       <article class="tile lg:col-span-7">
         <div class="tile-header">
           <span>WIN_02 // CORE_MANIFESTO</span>
-          <span>SCROLL HORIZONTAL →</span>
+          <span class="hidden lg:inline">DESLIZÁ O USÁ LA BARRA INFERIOR →</span>
+          <span class="lg:hidden">SCROLL ↓</span>
         </div>
         <div class="tile-body justify-between">
           <div>
-            <div class="inline-block px-3 py-1 border border-[#222222] bg-[#000000] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-6">
+            <div class="inline-block px-3 py-1 border border-[#222222] bg-[#000000] text-[11px] tracking-[0.1em] text-[#DCDAD0] uppercase mb-5">
               [SHASEKI.PRO // ESTUDIO AUDIOVISUAL &amp; AGENTES IA]
             </div>
 
-            <h1 class="font-display font-extrabold text-3xl sm:text-5xl xl:text-[50px] text-[#DCDAD0] leading-[1.02] max-w-3xl">
+            <h1 class="font-display font-extrabold text-3xl sm:text-5xl xl:text-[46px] text-[#DCDAD0] leading-[1.02] max-w-3xl">
               DISEÑO GENERATIVO, AUDIOVISUAL &amp; AGENTES IA QUE FACTURAN.
             </h1>
 
-            <p class="mt-6 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
+            <p class="mt-5 text-sm sm:text-base text-[#737373] leading-relaxed max-w-2xl">
               En <span class="text-[#DCDAD0]">SHASEKI</span> construimos sistemas visuales brutalistas, visuales en vivo/animados y servidores automatizados con <span class="text-[#DCDAD0]">n8n + WhatsApp IA</span> que convierten consultas entrantes en ingresos estructurados sin fricción operativa.
             </p>
 
             <!-- Primary & Secondary CTAs -->
-            <div class="mt-8 sm:mt-10 flex flex-wrap items-center gap-4">
+            <div class="mt-7 sm:mt-9 flex flex-wrap items-center gap-4">
               <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="1">
                 [DESPLEGAR AGENTE -&gt;]
               </button>
@@ -501,18 +630,19 @@
           </div>
 
           <!-- Bottom Technical Status Strip -->
-          <div class="mt-10 pt-5 border-t border-[#222222] flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em]">
+          <div class="mt-8 pt-4 border-t border-[#222222] flex flex-wrap items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em]">
             <span class="text-[#DCDAD0]">STATUS: ONLINE // TRELEW, AR // WAYLAND_UI v2.4</span>
-            <span class="text-[#737373]">RUEDA / FLECHAS / SWIPE</span>
+            <span class="text-[#737373] hidden lg:inline">RUEDA / FLECHAS / BARRA INFERIOR →</span>
+            <span class="text-[#737373] lg:hidden">SCROLL VERTICAL ↓</span>
           </div>
         </div>
       </article>
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 02 [02:AGENT] — PRIMARY PRODUCT (WHATSAPP + N8N)
+         WORKSPACE 02 [02:AGENTE_WA] — PRIMARY PRODUCT (WHATSAPP + N8N)
          ==================================================================== -->
-    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="1" aria-label="Workspace 02 Agent N8N">
+    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="1" aria-label="Workspace 02 Agente WhatsApp">
       <!-- Left Window: Commercial Pitch -->
       <article class="tile lg:col-span-6">
         <div class="tile-header">
@@ -525,7 +655,7 @@
               [PRODUCTO PRINCIPAL // WHATSAPP + N8N]
             </div>
 
-            <h2 class="font-display font-extrabold text-3xl sm:text-4xl xl:text-5xl text-[#DCDAD0] leading-[1.02]">
+            <h2 class="font-display font-extrabold text-3xl sm:text-4xl xl:text-[42px] text-[#DCDAD0] leading-[1.02]">
               TU ASISTENTE WHATSAPP EN SERVIDOR PROPIO 24/7.
             </h2>
 
@@ -534,7 +664,7 @@
             </p>
 
             <!-- Concrete ROI Deliverables -->
-            <ul class="mt-6 space-y-2.5 text-xs sm:text-sm text-[#DCDAD0] border-t border-[#222222] pt-5 list-none pl-0">
+            <ul class="mt-5 space-y-2 text-xs sm:text-sm text-[#DCDAD0] border-t border-[#222222] pt-4 list-none pl-0">
               <li>+ CAPTURA Y RESPUESTA EN &lt; 3 SEGUNDOS</li>
               <li>+ ESTRUCTURACIÓN AUTOMÁTICA EN CRM / SHEETS / DB</li>
               <li>+ COTIZACIÓN Y SEGUIMIENTO AUTOMÁTICO DE LEADS</li>
@@ -542,7 +672,7 @@
             </ul>
           </div>
 
-          <div class="mt-8 flex flex-wrap items-center gap-4">
+          <div class="mt-6 flex flex-wrap items-center gap-4">
             <button type="button" class="shk-btn-primary shk-chamfer-sm nav-jump" data-target-ws="4">
               [SOLICITAR IMPLEMENTACIÓN]
             </button>
@@ -585,11 +715,11 @@
               [ABRIR EN NUEVA PESTAÑA ↗]
             </a>
           </div>
-          <div class="flex-1 w-full min-h-[320px] border border-[#222222] bg-[#000000] overflow-hidden">
+          <div class="flex-1 w-full min-h-[300px] border border-[#222222] bg-[#000000] overflow-hidden">
             <iframe
               src="https://shaseki.github.io/AI-Automation-Final/"
               title="SHASEKI AI Automation Final — Live Demo"
-              class="w-full h-full min-h-[320px] border-0 bg-[#000000]"
+              class="w-full h-full min-h-[300px] border-0 bg-[#000000]"
               loading="lazy"
             ></iframe>
           </div>
@@ -626,7 +756,7 @@
             </div>
 
             <!-- Live JSON Output -->
-            <div class="mt-5 p-4 bg-[#0B0B0B] border border-[#222222]">
+            <div class="mt-4 p-4 bg-[#0B0B0B] border border-[#222222]">
               <div class="text-[10px] text-[#737373] uppercase mb-2">// CLIENT_INTAKE_LOG.JSON</div>
               <pre id="sim-json" class="text-[11px] leading-relaxed text-[#DCDAD0] overflow-x-auto m-0">{
   "status": "READY",
@@ -644,9 +774,9 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 03 [03:WORKS] — SELECTED ARCHIVE (2x2 TILING GRID)
+         WORKSPACE 03 [03:PROYECTOS] — SELECTED ARCHIVE (2x2 TILING GRID)
          ==================================================================== -->
-    <section class="workspace grid-cols-1 md:grid-cols-2" data-ws-index="2" aria-label="Workspace 03 Works">
+    <section class="workspace grid-cols-1 md:grid-cols-2" data-ws-index="2" aria-label="Workspace 03 Proyectos">
       <!-- [SHK-001] KOPROLITOS -->
       <article class="tile">
         <div class="tile-header">
@@ -755,9 +885,9 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 04 [04:STACK] — 3-COLUMN TILING BREAKDOWN
+         WORKSPACE 04 [04:SERVICIOS] — 3-COLUMN TILING BREAKDOWN
          ==================================================================== -->
-    <section class="workspace grid-cols-1 lg:grid-cols-3" data-ws-index="3" aria-label="Workspace 04 Stack">
+    <section class="workspace grid-cols-1 lg:grid-cols-3" data-ws-index="3" aria-label="Workspace 04 Servicios">
       <!-- 01 -->
       <article class="tile">
         <div class="tile-header">
@@ -844,9 +974,9 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 05 [05:DEPLOY] — CONVERSION & CONTACT
+         WORKSPACE 05 [05:CONTACTO] — CONVERSION & CONTACT
          ==================================================================== -->
-    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="4" aria-label="Workspace 05 Deploy">
+    <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="4" aria-label="Workspace 05 Contacto">
       <!-- Left Tile: Direct Commercial Pitch -->
       <article class="tile lg:col-span-5">
         <div class="tile-header">
@@ -900,7 +1030,7 @@
               <label for="f-service" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
                 SERVICIO
               </label>
-              <select id="f-service" name="service" class="shk-input cursor-pointer"> 
+              <select id="f-service" name="service" class="shk-input cursor-pointer">
                 <option value="WhatsApp+n8n Agent">WHATSAPP/TELEGRAM+AUTOMATIZACION</option>
                 <option value="Identidad & Design System">IDENTIDAD &amp; DESIGN SYSTEM</option>
                 <option value="Producción Audiovisual">PRODUCCIÓN GENERATIVA</option>
@@ -942,46 +1072,163 @@
   </main>
 
   <!-- ======================================================================
-       JAVASCRIPT: HORIZONTAL WAYLAND NAVIGATION + LOCAL IMAGE LOADER + N8N SIM
+       FIXED BOTTOM TMUX STATUS BAR (DESKTOP ONLY, >= 1024px)
+       ====================================================================== -->
+  <footer id="tmux-bar" aria-label="Navegación horizontal entre secciones">
+    <!-- Left: Previous Button -->
+    <div class="flex items-center justify-start">
+      <button id="tmux-prev" type="button" class="tmux-btn" disabled>
+        [← ANTERIOR]
+      </button>
+    </div>
+
+    <!-- Center: Counter + 5 Clickable Segments -->
+    <div class="flex items-center gap-3">
+      <span id="tmux-counter" class="text-[11px] text-[#DCDAD0] tracking-[0.08em]">01 / 05</span>
+      <div class="flex items-center gap-1.5" role="tablist" aria-label="Progreso de secciones">
+        <button type="button" class="tmux-seg is-active" data-seg="0" aria-label="Ir a Inicio"></button>
+        <button type="button" class="tmux-seg" data-seg="1" aria-label="Ir a Agente WhatsApp"></button>
+        <button type="button" class="tmux-seg" data-seg="2" aria-label="Ir a Proyectos"></button>
+        <button type="button" class="tmux-seg" data-seg="3" aria-label="Ir a Servicios"></button>
+        <button type="button" class="tmux-seg" data-seg="4" aria-label="Ir a Contacto"></button>
+      </div>
+    </div>
+
+    <!-- Right: Explicit Next Destination CTA -->
+    <div class="flex items-center justify-end">
+      <button id="tmux-next" type="button" class="tmux-btn-next shk-chamfer-sm">
+        [SIGUIENTE: AGENTE WHATSAPP →]
+      </button>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       JAVASCRIPT: HYBRID NAVIGATION (PEEK HORIZONTAL / VERTICAL MOBILE)
+       + LOCAL IMAGE LOADER + N8N SIMULATOR + DEPLOY FORM
        ====================================================================== -->
   <script>
     (function () {
       'use strict';
 
       const track = document.getElementById('workspace-track');
-      const tabs = document.querySelectorAll('#waybar .ws-tab');
+      const workspaces = Array.from(document.querySelectorAll('.workspace'));
+      const tabs = Array.from(document.querySelectorAll('#waybar .ws-tab'));
       const navJumps = document.querySelectorAll('.nav-jump');
       const scrollPctEl = document.getElementById('scroll-pct');
       const grainToggleBtn = document.getElementById('grain-toggle');
       const grainOverlay = document.getElementById('grain-overlay');
 
-      // ----------------------------------------------------------------------
-      // 1. HORIZONTAL SCROLL ENGINE & WAYBAR SYNC
-      // ----------------------------------------------------------------------
-      function getMaxScroll() {
-        return Math.max(track.scrollWidth - track.clientWidth, 1);
+      // Tmux Bar Controls
+      const tmuxPrev = document.getElementById('tmux-prev');
+      const tmuxNext = document.getElementById('tmux-next');
+      const tmuxCounter = document.getElementById('tmux-counter');
+      const tmuxSegs = Array.from(document.querySelectorAll('.tmux-seg'));
+
+      const WS_NEXT_LABELS = [
+        '[SIGUIENTE: AGENTE WHATSAPP →]',
+        '[SIGUIENTE: PROYECTOS →]',
+        '[SIGUIENTE: SERVICIOS →]',
+        '[SIGUIENTE: CONTACTO →]',
+        '[VOLVER AL INICIO ↺]'
+      ];
+
+      let activeIndex = 0;
+
+      function isDesktop() {
+        return window.innerWidth >= 1024;
       }
 
-      function updateWaybarProgress() {
-        const maxScroll = getMaxScroll();
-        const progress = Math.min(Math.max(track.scrollLeft / maxScroll, 0), 1);
-        const pct = Math.round(progress * 100);
-        scrollPctEl.textContent = `${String(pct).padStart(2, '0')}%`;
+      // ----------------------------------------------------------------------
+      // 1. HYBRID NAVIGATION ENGINE (DESKTOP HORIZONTAL PEEK / MOBILE VERTICAL)
+      // ----------------------------------------------------------------------
+      function updateActiveUI(index) {
+        activeIndex = Math.max(0, Math.min(index, workspaces.length - 1));
 
-        const activeIndex = Math.round(track.scrollLeft / Math.max(window.innerWidth, 1));
+        // Sync Waybar Tabs
         tabs.forEach((tab, idx) => {
           tab.classList.toggle('is-active', idx === activeIndex);
         });
-      }
 
-      function scrollToWorkspace(index) {
-        const clamped = Math.max(0, Math.min(index, tabs.length - 1));
-        track.scrollTo({
-          left: clamped * window.innerWidth,
-          behavior: 'smooth'
+        // Sync Workspace Peek Highlight
+        workspaces.forEach((ws, idx) => {
+          ws.classList.toggle('is-current', idx === activeIndex);
+        });
+
+        // Sync Tmux Bar
+        tmuxCounter.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(workspaces.length).padStart(2, '0')}`;
+        tmuxPrev.disabled = activeIndex === 0;
+        tmuxNext.textContent = WS_NEXT_LABELS[activeIndex] || '[SIGUIENTE →]';
+        tmuxSegs.forEach((seg, idx) => {
+          seg.classList.toggle('is-active', idx === activeIndex);
         });
       }
 
+      function syncScrollState() {
+        if (isDesktop()) {
+          const maxScroll = Math.max(track.scrollWidth - track.clientWidth, 1);
+          const progress = Math.min(Math.max(track.scrollLeft / maxScroll, 0), 1);
+          scrollPctEl.textContent = `${String(Math.round(progress * 100)).padStart(2, '0')}%`;
+
+          // Find workspace closest to left edge
+          let closestIdx = 0;
+          let minDist = Infinity;
+          workspaces.forEach((ws, idx) => {
+            const dist = Math.abs(ws.offsetLeft - track.scrollLeft);
+            if (dist < minDist) {
+              minDist = dist;
+              closestIdx = idx;
+            }
+          });
+          updateActiveUI(closestIdx);
+        } else {
+          const maxScrollY = Math.max(track.scrollHeight - track.clientHeight, 1);
+          const progressY = Math.min(Math.max(track.scrollTop / maxScrollY, 0), 1);
+          scrollPctEl.textContent = `${String(Math.round(progressY * 100)).padStart(2, '0')}%`;
+
+          // Find workspace closest to top edge
+          let closestIdx = 0;
+          let minDist = Infinity;
+          workspaces.forEach((ws, idx) => {
+            const dist = Math.abs(ws.offsetTop - track.scrollTop);
+            if (dist < minDist) {
+              minDist = dist;
+              closestIdx = idx;
+            }
+          });
+          updateActiveUI(closestIdx);
+        }
+      }
+
+      function scrollToWorkspace(index) {
+        const clamped = Math.max(0, Math.min(index, workspaces.length - 1));
+        const targetWs = workspaces[clamped];
+        if (!targetWs) return;
+
+        if (isDesktop()) {
+          track.scrollTo({
+            left: targetWs.offsetLeft,
+            behavior: 'smooth'
+          });
+        } else {
+          track.scrollTo({
+            top: targetWs.offsetTop,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      // Click on peeking (non-active) workspace jumps directly to it on desktop
+      workspaces.forEach((ws, idx) => {
+        ws.addEventListener('click', (e) => {
+          if (!isDesktop()) return;
+          if (idx !== activeIndex) {
+            e.preventDefault();
+            scrollToWorkspace(idx);
+          }
+        });
+      });
+
+      // Waybar Tabs
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => {
           const wsIdx = parseInt(tab.dataset.ws, 10);
@@ -989,6 +1236,7 @@
         });
       });
 
+      // CTA Nav Jumps
       navJumps.forEach((btn) => {
         btn.addEventListener('click', () => {
           const targetWs = parseInt(btn.dataset.targetWs, 10);
@@ -996,25 +1244,37 @@
         });
       });
 
-      track.addEventListener('scroll', updateWaybarProgress, { passive: true });
-      window.addEventListener('resize', updateWaybarProgress);
+      // Tmux Controls
+      tmuxPrev.addEventListener('click', () => {
+        if (activeIndex > 0) scrollToWorkspace(activeIndex - 1);
+      });
 
-      // Vertical mouse wheel -> smooth horizontal navigation
+      tmuxNext.addEventListener('click', () => {
+        if (activeIndex < workspaces.length - 1) {
+          scrollToWorkspace(activeIndex + 1);
+        } else {
+          scrollToWorkspace(0);
+        }
+      });
+
+      tmuxSegs.forEach((seg) => {
+        seg.addEventListener('click', () => {
+          const idx = parseInt(seg.dataset.seg, 10);
+          if (!Number.isNaN(idx)) scrollToWorkspace(idx);
+        });
+      });
+
+      track.addEventListener('scroll', syncScrollState, { passive: true });
+      window.addEventListener('resize', syncScrollState);
+
+      // Frictionless horizontal wheel on desktop (never trapped by inner scroll)
       track.addEventListener(
         'wheel',
         (e) => {
-          const scrollableTile = e.target.closest('.tile-body');
-          if (scrollableTile && scrollableTile.scrollHeight > scrollableTile.clientHeight + 2) {
-            const atTop = scrollableTile.scrollTop <= 0 && e.deltaY < 0;
-            const atBottom =
-              scrollableTile.scrollTop + scrollableTile.clientHeight >=
-                scrollableTile.scrollHeight - 2 && e.deltaY > 0;
-            if (!atTop && !atBottom) return;
-          }
-
-          if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          if (!isDesktop()) return;
+          if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
             e.preventDefault();
-            track.scrollLeft += e.deltaY * 1.15;
+            track.scrollLeft += e.deltaY * 1.2;
           }
         },
         { passive: false }
@@ -1026,6 +1286,7 @@
       let dragStartScroll = 0;
 
       track.addEventListener('mousedown', (e) => {
+        if (!isDesktop()) return;
         if (e.target.closest('a, button, input, textarea, select, iframe, #concept-dropzone')) return;
         isDragging = true;
         dragStartX = e.pageX;
@@ -1036,7 +1297,7 @@
       window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         const dx = e.pageX - dragStartX;
-        track.scrollLeft = dragStartScroll - dx * 1.2;
+        track.scrollLeft = dragStartScroll - dx * 1.25;
       });
 
       window.addEventListener('mouseup', () => {
@@ -1045,17 +1306,17 @@
         track.classList.remove('is-dragging');
       });
 
-      // Keyboard navigation (ArrowLeft / ArrowRight)
+      // Keyboard navigation (ArrowLeft / ArrowRight on desktop)
       window.addEventListener('keydown', (e) => {
+        if (!isDesktop()) return;
         const tag = document.activeElement && document.activeElement.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-        const currentIdx = Math.round(track.scrollLeft / Math.max(window.innerWidth, 1));
         if (e.key === 'ArrowRight') {
           e.preventDefault();
-          scrollToWorkspace(currentIdx + 1);
+          scrollToWorkspace(activeIndex + 1);
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          scrollToWorkspace(currentIdx - 1);
+          scrollToWorkspace(activeIndex - 1);
         }
       });
 
@@ -1259,8 +1520,8 @@
         deployForm.classList.remove('hidden');
       });
 
-      // Initialize Waybar progress on load
-      updateWaybarProgress();
+      // Initialize UI state on load
+      syncScrollState();
     })();
   </script>
 </body>
