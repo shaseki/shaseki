@@ -3,9 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SHASEKI | PATAGONIA ARGENTINA </title>
+  <title>SHASEKI | Diseño Generativo, Audiovisual &amp; Agentes IA</title>
+  <meta
+    name="description"
+    content="SHASEKI — Estudio de diseño generativo, producción audiovisual y automatización con agentes IA (n8n + WhatsApp) desde la Patagonia Argentina."
+  />
+  <link rel="canonical" href="https://shaseki.pro/" />
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_AR" />
+  <meta property="og:site_name" content="SHASEKI" />
+  <meta property="og:title" content="SHASEKI | Diseño Generativo, Audiovisual &amp; Agentes IA" />
+  <meta
+    property="og:description"
+    content="Sistemas visuales brutalistas, visuales generativos en vivo y servidores automatizados con n8n + WhatsApp IA 24/7."
+  />
+  <meta property="og:url" content="https://shaseki.pro/" />
+  <meta property="og:image" content="https://shaseki.pro/logo.png" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SHASEKI | Diseño Generativo, Audiovisual &amp; Agentes IA" />
+  <meta
+    name="twitter:description"
+    content="Sistemas visuales brutalistas, visuales generativos en vivo y servidores automatizados con n8n + WhatsApp IA 24/7."
+  />
+  <meta name="twitter:image" content="https://shaseki.pro/logo.png" />
 
   <!-- Favicons & Mobile App Icons (colocar los archivos en la raíz junto al HTML) -->
+  <link rel="manifest" href="./site.webmanifest" />
   <link rel="icon" href="./favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
@@ -16,11 +43,11 @@
   <meta name="apple-mobile-web-app-title" content="SHASEKI" />
   <meta name="application-name" content="SHASEKI" />
 
-  <!-- Google Fonts: Unbounded (700, 800, 900) & JetBrains Mono (400, 500) -->
+  <!-- Google Fonts: Unbounded (700, 800), JetBrains Mono (400, 500) & Space Grotesk (400, 500) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@700;800;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&family=Unbounded:wght@700;800&display=swap"
     rel="stylesheet"
   />
 
@@ -29,9 +56,11 @@
 
   <style>
     /* ==========================================================================
-       SHASEKI DESIGN SYSTEM — FLAT 2D BRUTALIST WAYLAND TOKENS
+       SHASEKI DESIGN SYSTEM — TOKENS & FLAT 2D BRUTALIST WAYLAND RULES
+       Source of truth: ./design-system/tokens.css & ./design-system/BRAND_RULES.md
        ========================================================================== */
     :root {
+      /* 1. COLORES */
       --bg-primary: #000000;
       --bg-surface: #0B0B0B;
       --fg-primary: #DCDAD0; /* Bone White */
@@ -39,20 +68,52 @@
       --border-subtle: #222222;
       --border-strong: #DCDAD0;
 
+      /* 2. TIPOGRAFÍA */
       --font-display: 'Unbounded', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Space Grotesk', system-ui, -apple-system, sans-serif;
 
+      /* Escala tipográfica fluida */
+      --text-xs: 0.75rem;   /* 12px - Metadatos / Códigos */
+      --text-sm: 0.875rem;  /* 14px - UI / Navegación */
+      --text-base: 1rem;    /* 16px - Lectura */
+      --text-lg: 1.5rem;    /* 24px - Subtítulos */
+      --text-xl: clamp(2rem, 5vw, 4rem);     /* Títulos de sección */
+      --text-hero: clamp(3rem, 9vw, 7.5rem); /* Display principal */
+
+      /* 3. ESPACIADO (Grilla estricta de 4px / 8px) */
+      --space-1: 0.25rem;  /* 4px */
+      --space-2: 0.5rem;   /* 8px */
+      --space-3: 1rem;     /* 16px */
+      --space-4: 1.5rem;   /* 24px */
+      --space-5: 2rem;     /* 32px */
+      --space-6: 3rem;     /* 48px */
+      --space-8: 4rem;     /* 64px */
+      --space-12: 6rem;    /* 96px */
+      --space-16: 8rem;    /* 128px */
+
+      /* 4. GEOMETRÍA (Principio Oblicuo) */
+      --radius: 0px;
+      --chamfer-sm: 8px;
+      --chamfer-md: 16px;
+      --container-max: 1440px;
+
+      /* 5. MOTION */
+      --ease-sharp: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-instant: 100ms;
+      --duration-fast: 200ms;
+      --duration-base: 350ms;
+
+      /* 6. WAYLAND TILING LAYOUT */
       --waybar-h: 38px;
       --tmux-h: 38px;
       --tile-gap: 8px;
-      --chamfer-sm: 10px;
-      --chamfer-md: 16px;
     }
 
     /* Brutalist Reset: Strict 0px radius, zero shadows */
     *, *::before, *::after {
       box-sizing: border-box;
-      border-radius: 0px !important;
+      border-radius: var(--radius) !important;
       box-shadow: none !important;
     }
 
@@ -69,16 +130,37 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    body {
+      font-size: var(--text-base);
+      line-height: 1.5;
+    }
+
     ::selection {
       background-color: var(--fg-primary);
       color: var(--bg-primary);
     }
 
-    .font-display {
+    .font-display,
+    .shk-display {
       font-family: var(--font-display);
+      font-weight: 800;
       text-transform: uppercase;
       line-height: 0.98;
       letter-spacing: -0.02em;
+    }
+
+    .shk-meta {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--fg-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .shk-body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
     }
 
     /* ==========================================================================
@@ -92,7 +174,7 @@
       z-index: 9999;
       pointer-events: none;
       opacity: 0.04;
-      transition: opacity 150ms linear;
+      transition: opacity var(--duration-fast) linear;
     }
     #grain-overlay.grain-off {
       opacity: 0;
@@ -131,7 +213,7 @@
       font-size: 11px;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear;
     }
     #waybar .ws-tab:hover {
       color: var(--fg-primary);
@@ -154,7 +236,7 @@
       font-size: 10px;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear;
     }
     .waybar-btn:hover {
       background-color: var(--fg-primary);
@@ -188,7 +270,7 @@
       padding: var(--tile-gap);
       display: grid;
       gap: var(--tile-gap);
-      transition: opacity 200ms linear;
+      transition: opacity var(--duration-fast) var(--ease-sharp);
     }
 
     /* Desktop Horizontal Mode (>= 1024px) */
@@ -277,7 +359,7 @@
       text-transform: uppercase;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear, opacity 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear, opacity var(--duration-instant) linear;
     }
     .tmux-btn:hover:not(:disabled) {
       background-color: var(--fg-primary);
@@ -302,7 +384,7 @@
       text-transform: uppercase;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 100ms linear, color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear;
     }
     .tmux-btn-next:hover {
       background-color: var(--bg-primary);
@@ -316,7 +398,7 @@
       border: none;
       padding: 0;
       cursor: pointer;
-      transition: background-color 120ms linear;
+      transition: background-color var(--duration-fast) var(--ease-sharp);
     }
     .tmux-seg:hover {
       background-color: var(--fg-muted);
@@ -335,7 +417,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: border-color 120ms linear;
+      transition: border-color var(--duration-fast) var(--ease-sharp);
     }
     .tile:hover {
       border-color: var(--border-strong);
@@ -381,7 +463,7 @@
       font-size: 10px;
       cursor: pointer;
       white-space: nowrap;
-      transition: background-color 100ms linear, color 100ms linear, border-color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear;
     }
     .agent-tab:hover {
       color: var(--fg-primary);
@@ -408,6 +490,7 @@
       );
     }
 
+    .shk-chamfer,
     .shk-chamfer-md {
       clip-path: polygon(
         var(--chamfer-md) 0,
@@ -419,23 +502,44 @@
       );
     }
 
+    .shk-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: transparent;
+      color: var(--fg-primary);
+      border: 1px solid var(--border-strong);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear;
+    }
+    .shk-btn:hover {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+    }
+
     .shk-btn-primary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: var(--space-2);
       padding: 13px 22px;
       background-color: var(--fg-primary);
       color: var(--bg-primary);
       border: 1px solid var(--fg-primary);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: var(--text-xs);
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       text-decoration: none;
       cursor: pointer;
-      transition: background-color 100ms linear, color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear;
     }
     .shk-btn-primary:hover {
       background-color: var(--bg-primary);
@@ -446,18 +550,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: var(--space-2);
       padding: 13px 20px;
       background-color: transparent;
       color: var(--fg-primary);
       border: 1px solid var(--border-strong);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: var(--text-xs);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       text-decoration: none;
       cursor: pointer;
-      transition: background-color 100ms linear, color 100ms linear;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear;
     }
     .shk-btn-secondary:hover {
       background-color: var(--fg-primary);
@@ -471,9 +575,9 @@
       color: var(--fg-primary);
       padding: 10px 12px;
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: var(--text-xs);
       outline: none;
-      transition: border-color 100ms linear;
+      transition: border-color var(--duration-instant) linear;
     }
     .shk-input:focus {
       border-color: var(--fg-primary);
@@ -485,26 +589,49 @@
     /* Dropzone highlight for local image preview fallback */
     #concept-dropzone.is-dragover {
       border-color: var(--fg-primary);
-      background-color: #111111;
+      background-color: var(--bg-surface);
     }
 
     /* Custom Thin Scrollbars */
     .tile-body::-webkit-scrollbar,
     .workspace::-webkit-scrollbar,
     #workspace-track::-webkit-scrollbar,
+    #chat-messages::-webkit-scrollbar,
     .no-scrollbar::-webkit-scrollbar {
       width: 4px;
       height: 0px;
     }
     .tile-body::-webkit-scrollbar-track,
     .workspace::-webkit-scrollbar-track,
-    #workspace-track::-webkit-scrollbar-track {
+    #workspace-track::-webkit-scrollbar-track,
+    #chat-messages::-webkit-scrollbar-track {
       background: #000000;
     }
     .tile-body::-webkit-scrollbar-thumb,
     .workspace::-webkit-scrollbar-thumb,
-    #workspace-track::-webkit-scrollbar-thumb {
+    #workspace-track::-webkit-scrollbar-thumb,
+    #chat-messages::-webkit-scrollbar-thumb {
       background: #222222;
+    }
+
+    /* Chat Quick-Prompt Chips */
+    .chat-chip {
+      padding: 5px 8px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-primary);
+      color: var(--fg-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--duration-instant) linear, color var(--duration-instant) linear, border-color var(--duration-instant) linear;
+    }
+    .chat-chip:hover {
+      background-color: var(--fg-primary);
+      color: var(--bg-primary);
+      border-color: var(--fg-primary);
     }
   </style>
 </head>
@@ -527,10 +654,10 @@
        FIXED TOP WAYBAR (38px) — SPANISH BUSINESS LABELS
        ====================================================================== -->
   <header id="waybar">
-    <!-- Left: Brand text SHASEKI in Unbounded 900 ONLY -->
+    <!-- Left: Brand text SHASEKI in Unbounded 800 -->
     <button
       type="button"
-      class="bg-transparent border-0 p-0 cursor-pointer nav-jump font-display font-black text-[13px] tracking-[0.04em] text-[#DCDAD0]"
+      class="bg-transparent border-0 p-0 cursor-pointer nav-jump font-display font-extrabold text-[13px] tracking-[0.04em] text-[#DCDAD0]"
       data-target-ws="0"
       aria-label="SHASEKI Inicio"
     >
@@ -774,7 +901,7 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 03 [03:PROYECTOS] — SELECTED ARCHIVE (2x2 TILING GRID)
+         WORKSPACE 03 [03:PROYECTOS] — SELECTED ARCHIVE (3-TILE TILING GRID)
          ==================================================================== -->
     <section class="workspace grid-cols-1 md:grid-cols-2" data-ws-index="2" aria-label="Workspace 03 Proyectos">
       <!-- [SHK-001] KOPROLITOS -->
@@ -835,34 +962,10 @@
         </div>
       </article>
 
-      <!-- [SHK-003] ESCALERA CIRCULAR -->
-      <article class="tile">
+      <!-- [SHK-003] LIVE VISUAL SYSTEMS -->
+      <article class="tile md:col-span-2">
         <div class="tile-header">
           <span>[SHK-003]</span>
-          <span>CO-PRODUCCIÓN</span>
-        </div>
-        <div class="tile-body justify-between">
-          <div>
-            <h3 class="font-display font-extrabold text-xl sm:text-2xl text-[#DCDAD0]">
-              ESCALERA CIRCULAR
-            </h3>
-            <p class="mt-3 text-xs sm:text-sm text-[#737373] leading-relaxed">
-              Co-producción audiovisual y sistema de identidad visual sobre negro profundo y grano analógico.
-            </p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-[#222222] flex items-center justify-between gap-3">
-            <span class="text-[10px] text-[#737373] uppercase">AUDIO × VISUAL</span>
-            <button type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px] nav-jump" data-target-ws="4">
-              [CONSULTAR →]
-            </button>
-          </div>
-        </div>
-      </article>
-
-      <!-- [SHK-004] LIVE VISUAL SYSTEMS -->
-      <article class="tile">
-        <div class="tile-header">
-          <span>[SHK-004]</span>
           <span>STAGE MOTION</span>
         </div>
         <div class="tile-body justify-between">
@@ -974,14 +1077,14 @@
     </section>
 
     <!-- ====================================================================
-         WORKSPACE 05 [05:CONTACTO] — CONVERSION & CONTACT
+         WORKSPACE 05 [05:CONTACTO] — CONVERSION, WHATSAPP & LIVE BOT CHAT
          ==================================================================== -->
     <section class="workspace grid-cols-1 lg:grid-cols-12" data-ws-index="4" aria-label="Workspace 05 Contacto">
-      <!-- Left Tile: Direct Commercial Pitch -->
+      <!-- Left Tile: Direct Commercial Pitch & WhatsApp CTA -->
       <article class="tile lg:col-span-5">
         <div class="tile-header">
-          <span>WIN_08 // DEPLOY_BRIEF</span>
-          <span>DIRECT LINE</span>
+          <span>WIN_08 // DIRECT_LINE</span>
+          <span>WHATSAPP + MAIL</span>
         </div>
         <div class="tile-body justify-between">
           <div>
@@ -990,8 +1093,29 @@
               CONSTRUYAMOS TU SISTEMA.
             </h2>
             <p class="mt-6 text-sm sm:text-base text-[#737373] leading-relaxed">
-              Contanos qué proceso querés automatizar o qué identidad querés llevar a otro nivel. Respuesta técnica directa, sin vueltas.
+              Probá el agente en vivo en la terminal de al lado, enviá tu brief o escribinos directo por WhatsApp. Respuesta técnica directa, sin vueltas.
             </p>
+
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                id="wa-direct-btn"
+                href="#contacto-whatsapp"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="shk-btn-primary shk-chamfer-sm"
+              >
+                [HABLAR POR WHATSAPP ↗]
+              </a>
+              <a
+                href="mailto:hola@shaseki.pro?subject=Consulta%20SHASEKI.PRO"
+                class="shk-btn-secondary"
+              >
+                [ENVIAR EMAIL ↗]
+              </a>
+            </div>
+            <div id="wa-config-hint" class="hidden mt-3 text-[10px] text-[#737373] uppercase tracking-[0.06em]">
+              // WHATSAPP_NUMBER PENDIENTE EN SHASEKI_CONFIG — USÁ EL CHAT O EMAIL MIENTRAS TANTO.
+            </div>
           </div>
 
           <div class="mt-10 pt-6 border-t border-[#222222] space-y-3 text-xs uppercase tracking-[0.08em]">
@@ -1011,19 +1135,93 @@
         </div>
       </article>
 
-      <!-- Right Tile: Interactive Brief Form -->
+      <!-- Right Tile: Tabbed Live Bot Chat & Brief Form -->
       <article class="tile lg:col-span-7">
-        <div class="tile-header">
-          <span>WIN_09 // TERMINAL_INTAKE.SH</span>
-          <span>READY</span>
+        <div class="tile-header !px-2 gap-2">
+          <div class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            <button type="button" class="agent-tab contact-tab is-active" data-contact-tab="chat">
+              [CHAT_BOT // LIVE]
+            </button>
+            <button type="button" class="agent-tab contact-tab" data-contact-tab="brief">
+              [ENVIAR_BRIEF]
+            </button>
+          </div>
+          <span id="contact-win-status" class="hidden sm:inline shrink-0">WIN_09 // BOT_READY</span>
         </div>
-        <div class="tile-body justify-center">
+
+        <!-- Tab 1: Live Bot Chat connected to n8n Webhook -->
+        <div id="contact-panel-chat" class="tile-body !p-4 bg-[#000000] justify-between gap-3">
+          <!-- Chat Log -->
+          <div
+            id="chat-messages"
+            class="flex-1 min-h-[260px] max-h-[420px] lg:max-h-none overflow-y-auto border border-[#222222] bg-[#0B0B0B] p-3.5 space-y-3 text-xs leading-relaxed"
+            aria-live="polite"
+          >
+            <div class="border-l-2 border-[#DCDAD0] pl-3 py-0.5">
+              <div class="text-[10px] text-[#737373] uppercase tracking-[0.08em] mb-1">
+                [BOT // SHASEKI]
+              </div>
+              <div class="text-[#DCDAD0]">
+                Terminal activa. Preguntame sobre automatización con n8n + WhatsApp, visuales generativos, diseño web o disponibilidad para tu proyecto.
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Prompts -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <button type="button" class="chat-chip" data-prompt="¿Cómo funciona el agente de WhatsApp con n8n?">
+              [¿CÓMO FUNCIONA EL BOT?]
+            </button>
+            <button type="button" class="chat-chip" data-prompt="Quiero cotizar una automatización para mi negocio.">
+              [COTIZAR AUTOMATIZACIÓN]
+            </button>
+            <button type="button" class="chat-chip" data-prompt="¿Qué stack usan y cuál es su disponibilidad?">
+              [STACK Y DISPONIBILIDAD]
+            </button>
+          </div>
+
+          <!-- Chat Input -->
+          <form id="chat-form" class="flex items-stretch gap-2">
+            <label for="chat-input" class="sr-only">Mensaje para el bot de SHASEKI</label>
+            <input
+              id="chat-input"
+              type="text"
+              required
+              maxlength="500"
+              autocomplete="off"
+              placeholder="Escribí tu consulta para el agente..."
+              class="shk-input flex-1"
+            />
+            <button id="chat-send-btn" type="submit" class="shk-btn-primary shk-chamfer-sm !py-2.5 !px-4 !text-[11px] shrink-0">
+              [ENVIAR →]
+            </button>
+          </form>
+
+          <div class="pt-2 border-t border-[#222222] flex flex-wrap items-center justify-between gap-2 text-[10px] text-[#737373] uppercase">
+            <span id="chat-mode-badge">ENDPOINT: LOCAL_PREVIEW (CONFIGURAR WEBHOOK N8N)</span>
+            <button type="button" id="chat-clear-btn" class="bg-transparent border-0 p-0 text-[#737373] hover:text-[#DCDAD0] font-mono text-[10px] uppercase cursor-pointer">
+              [LIMPIAR_LOG]
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab 2: Interactive Brief Form -->
+        <div id="contact-panel-brief" class="tile-body hidden justify-center">
           <form id="deploy-form" class="space-y-4 max-w-2xl w-full">
-            <div>
-              <label for="f-name" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
-                NOMBRE / EMPRESA *
-              </label>
-              <input id="f-name" name="name" type="text" required placeholder="EJ: MARTÍN S. // ESTUDIO X" class="shk-input" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="f-name" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                  NOMBRE / EMPRESA *
+                </label>
+                <input id="f-name" name="name" type="text" required placeholder="EJ: MARTÍN S. // ESTUDIO X" class="shk-input" />
+              </div>
+
+              <div>
+                <label for="f-contact" class="block text-[10px] text-[#737373] uppercase tracking-[0.1em] mb-1.5">
+                  EMAIL O WHATSAPP *
+                </label>
+                <input id="f-contact" name="contact" type="text" required placeholder="EJ: hola@empresa.com / +54 9..." class="shk-input" />
+              </div>
             </div>
 
             <div>
@@ -1046,10 +1244,10 @@
             </div>
 
             <div class="pt-2 flex flex-wrap items-center justify-between gap-4">
-              <button type="submit" class="shk-btn-primary shk-chamfer-sm">
+              <button id="deploy-submit-btn" type="submit" class="shk-btn-primary shk-chamfer-sm">
                 [ENVIAR BRIEF // DEPLOY]
               </button>
-              <span class="text-[10px] text-[#737373] uppercase">
+              <span id="brief-mode-hint" class="text-[10px] text-[#737373] uppercase">
                 DIRECTO // ZERO SPAM
               </span>
             </div>
@@ -1057,13 +1255,18 @@
 
           <!-- Instant Terminal Confirmation Output -->
           <div id="deploy-confirm" class="hidden max-w-2xl w-full p-6 bg-[#000000] border border-[#DCDAD0] shk-chamfer-md">
-            <div class="text-xs text-[#DCDAD0] uppercase tracking-[0.1em] mb-3">
+            <div id="deploy-confirm-title" class="text-xs text-[#DCDAD0] uppercase tracking-[0.1em] mb-3">
               [OK] BRIEF_ENQUEUED -&gt; SHASEKI.PRO
             </div>
             <pre id="deploy-receipt" class="text-xs text-[#737373] leading-relaxed whitespace-pre-wrap m-0"></pre>
-            <button id="deploy-reset" type="button" class="mt-6 shk-btn-secondary !py-2 !px-4 !text-[11px]">
-              [NUEVA CONSULTA]
-            </button>
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <button id="deploy-reset" type="button" class="shk-btn-secondary !py-2 !px-4 !text-[11px]">
+                [NUEVA CONSULTA]
+              </button>
+              <a id="deploy-mailto-fallback" href="mailto:hola@shaseki.pro" class="hidden shk-btn-primary shk-chamfer-sm !py-2 !px-4 !text-[11px]">
+                [ENVIAR POR EMAIL ↗]
+              </a>
+            </div>
           </div>
         </div>
       </article>
@@ -1109,6 +1312,16 @@
   <script>
     (function () {
       'use strict';
+
+      // ----------------------------------------------------------------------
+      // 0. CONFIGURACIÓN DE INTEGRACIONES (EDITAR ANTES DE PRODUCCIÓN)
+      // ----------------------------------------------------------------------
+      const SHASEKI_CONFIG = {
+        whatsappNumber: '', // Ej: '5492804000000' (código de país + área, sin + ni espacios)
+        whatsappDefaultText: 'Hola SHASEKI, vi tu portfolio shaseki.pro y quiero hacer una consulta.',
+        chatWebhookUrl: '', // Ej: 'https://n8n.shaseki.pro/webhook/portfolio-chat'
+        briefWebhookUrl: '' // Ej: 'https://n8n.shaseki.pro/webhook/client-intake'
+      };
 
       const track = document.getElementById('workspace-track');
       const workspaces = Array.from(document.querySelectorAll('.workspace'));
@@ -1267,11 +1480,17 @@
       track.addEventListener('scroll', syncScrollState, { passive: true });
       window.addEventListener('resize', syncScrollState);
 
-      // Frictionless horizontal wheel on desktop (never trapped by inner scroll)
+      // Frictionless horizontal wheel on desktop (never trapped by inner scroll, except scrollable chat log)
       track.addEventListener(
         'wheel',
         (e) => {
           if (!isDesktop()) return;
+          const chatBox = e.target.closest('#chat-messages');
+          if (chatBox && chatBox.scrollHeight > chatBox.clientHeight) {
+            const atTop = chatBox.scrollTop <= 0 && e.deltaY < 0;
+            const atBottom = chatBox.scrollTop + chatBox.clientHeight >= chatBox.scrollHeight - 1 && e.deltaY > 0;
+            if (!atTop && !atBottom) return;
+          }
           if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
             e.preventDefault();
             track.scrollLeft += e.deltaY * 1.2;
@@ -1287,7 +1506,7 @@
 
       track.addEventListener('mousedown', (e) => {
         if (!isDesktop()) return;
-        if (e.target.closest('a, button, input, textarea, select, iframe, #concept-dropzone')) return;
+        if (e.target.closest('a, button, input, textarea, select, iframe, #concept-dropzone, #chat-messages')) return;
         isDragging = true;
         dragStartX = e.pageX;
         dragStartScroll = track.scrollLeft;
@@ -1383,7 +1602,7 @@
       // ----------------------------------------------------------------------
       // 4. WORKSPACE 02: INTERNAL AGENT TABS & N8N PIPELINE SIMULATOR
       // ----------------------------------------------------------------------
-      const agentTabs = document.querySelectorAll('.agent-tab');
+      const agentTabs = document.querySelectorAll('[data-agent-tab]');
       const agentPanelDemo = document.getElementById('agent-panel-demo');
       const agentPanelSim = document.getElementById('agent-panel-sim');
       const simStatus = document.getElementById('sim-status');
@@ -1489,34 +1708,280 @@
       });
 
       // ----------------------------------------------------------------------
-      // 5. WORKSPACE 05: DEPLOY BRIEF FORM
+      // 5. WORKSPACE 05: WHATSAPP CTA, LIVE BOT CHAT & DEPLOY BRIEF FORM
       // ----------------------------------------------------------------------
+      const waDirectBtn = document.getElementById('wa-direct-btn');
+      const waConfigHint = document.getElementById('wa-config-hint');
+      const waDigits = (SHASEKI_CONFIG.whatsappNumber || '').replace(/\D/g, '');
+
+      if (waDigits) {
+        waDirectBtn.href = `https://wa.me/${waDigits}?text=${encodeURIComponent(SHASEKI_CONFIG.whatsappDefaultText)}`;
+      } else {
+        waDirectBtn.removeAttribute('target');
+        waDirectBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          waConfigHint.classList.remove('hidden');
+          const chatInputEl = document.getElementById('chat-input');
+          if (chatInputEl) chatInputEl.focus();
+        });
+      }
+
+      // Internal Contact Tabs (Live Chat vs Brief Form)
+      const contactTabs = document.querySelectorAll('[data-contact-tab]');
+      const contactPanelChat = document.getElementById('contact-panel-chat');
+      const contactPanelBrief = document.getElementById('contact-panel-brief');
+      const contactWinStatus = document.getElementById('contact-win-status');
+
+      contactTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const target = tab.dataset.contactTab;
+          contactTabs.forEach((t) => t.classList.toggle('is-active', t === tab));
+
+          if (target === 'chat') {
+            contactPanelChat.classList.remove('hidden');
+            contactPanelBrief.classList.add('hidden');
+            contactWinStatus.textContent = SHASEKI_CONFIG.chatWebhookUrl ? 'WIN_09 // BOT_LIVE' : 'WIN_09 // BOT_PREVIEW';
+          } else {
+            contactPanelChat.classList.add('hidden');
+            contactPanelBrief.classList.remove('hidden');
+            contactWinStatus.textContent = 'WIN_09 // BRIEF';
+          }
+        });
+      });
+
+      // Live Bot Chat Engine
+      const chatMessages = document.getElementById('chat-messages');
+      const chatForm = document.getElementById('chat-form');
+      const chatInput = document.getElementById('chat-input');
+      const chatSendBtn = document.getElementById('chat-send-btn');
+      const chatModeBadge = document.getElementById('chat-mode-badge');
+      const chatClearBtn = document.getElementById('chat-clear-btn');
+      const chatChips = document.querySelectorAll('.chat-chip');
+      let chatBusy = false;
+
+      if (SHASEKI_CONFIG.chatWebhookUrl) {
+        chatModeBadge.textContent = 'ENDPOINT: N8N_WEBHOOK // LIVE';
+        contactWinStatus.textContent = 'WIN_09 // BOT_LIVE';
+      } else {
+        chatModeBadge.textContent = 'MODE: LOCAL_PREVIEW (CONFIGURAR chatWebhookUrl)';
+        contactWinStatus.textContent = 'WIN_09 // BOT_PREVIEW';
+      }
+
+      function getChatSessionId() {
+        const key = 'shk_chat_session';
+        try {
+          let sid = sessionStorage.getItem(key);
+          if (!sid) {
+            sid = 'shk_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+            sessionStorage.setItem(key, sid);
+          }
+          return sid;
+        } catch (_) {
+          return 'shk_' + Date.now().toString(36);
+        }
+      }
+
+      function appendChatMessage(senderLabel, text, isUser) {
+        const wrapper = document.createElement('div');
+        wrapper.className = isUser
+          ? 'border-l-2 border-[#737373] pl-3 py-0.5 bg-[#000000]/40'
+          : 'border-l-2 border-[#DCDAD0] pl-3 py-0.5';
+
+        const header = document.createElement('div');
+        header.className = 'text-[10px] text-[#737373] uppercase tracking-[0.08em] mb-1';
+        header.textContent = senderLabel;
+
+        const body = document.createElement('div');
+        body.className = 'text-[#DCDAD0] whitespace-pre-wrap';
+        body.textContent = text;
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(body);
+        chatMessages.appendChild(wrapper);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function getLocalPreviewReply(msg) {
+        const q = msg.toLowerCase();
+        if (q.includes('bot') || q.includes('whatsapp') || q.includes('n8n') || q.includes('funciona')) {
+          return 'Conectamos WhatsApp Business Cloud API a un servidor propio con n8n + agente IA. Cada mensaje entra por webhook, se califica, se guarda en CRM/DB y responde en < 3 segundos. (Vista previa local — conectá chatWebhookUrl para respuestas reales del bot).';
+        }
+        if (q.includes('cotiz') || q.includes('presupuesto') || q.includes('precio') || q.includes('negocio')) {
+          return 'Para cotizar una automatización necesitamos saber volumen diario de consultas y herramientas actuales (Sheets, CRM, Calendar). Podés dejar tus datos en la pestaña [ENVIAR_BRIEF] o escribirnos directo a hola@shaseki.pro.';
+        }
+        if (q.includes('stack') || q.includes('disponib') || q.includes('trabajo')) {
+          return 'Stack principal: n8n self-hosted, WhatsApp Cloud API, LLMs, HTML/CSS/JS puro, Astro, Blender, Hydra y After Effects. Operación remota global desde Trelew, Chubut (AR) con disponibilidad para proyectos freelance y colaboraciones técnicas.';
+        }
+        return 'Consulta recibida en modo LOCAL_PREVIEW. Configurá SHASEKI_CONFIG.chatWebhookUrl con tu endpoint de n8n para conectar este chat con tu agente en producción, o usá [ENVIAR_BRIEF] / hola@shaseki.pro.';
+      }
+
+      function extractBotReply(data) {
+        if (!data) return null;
+        if (typeof data === 'string') return data;
+        if (Array.isArray(data) && data.length > 0) return extractBotReply(data[0]);
+        return data.reply || data.output || data.text || data.message || data.response || null;
+      }
+
+      async function sendChatMessage(rawText) {
+        const message = (rawText || '').trim();
+        if (!message || chatBusy) return;
+
+        chatBusy = true;
+        chatInput.value = '';
+        chatSendBtn.disabled = true;
+        chatSendBtn.textContent = '[ENVIANDO...]';
+        contactWinStatus.textContent = 'WIN_09 // TYPING...';
+
+        appendChatMessage('[USER]', message, true);
+
+        if (!SHASEKI_CONFIG.chatWebhookUrl) {
+          setTimeout(() => {
+            appendChatMessage('[BOT // LOCAL_PREVIEW]', getLocalPreviewReply(message), false);
+            chatBusy = false;
+            chatSendBtn.disabled = false;
+            chatSendBtn.textContent = '[ENVIAR →]';
+            contactWinStatus.textContent = 'WIN_09 // BOT_PREVIEW';
+            chatInput.focus();
+          }, 350);
+          return;
+        }
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+        try {
+          const response = await fetch(SHASEKI_CONFIG.chatWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sessionId: getChatSessionId(),
+              message,
+              source: 'shaseki.pro',
+              timestamp: new Date().toISOString()
+            }),
+            signal: controller.signal
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const contentType = response.headers.get('content-type') || '';
+          const payload = contentType.includes('application/json')
+            ? await response.json()
+            : await response.text();
+
+          const replyText = extractBotReply(payload) || 'Mensaje procesado sin respuesta textual.';
+          appendChatMessage('[BOT // SHASEKI]', replyText, false);
+        } catch (err) {
+          appendChatMessage(
+            '[ERROR // N8N_TIMEOUT]',
+            'No pudimos conectar con el agente en este momento. Usá la pestaña [ENVIAR_BRIEF] o escribí a hola@shaseki.pro.',
+            false
+          );
+        } finally {
+          clearTimeout(timeoutId);
+          chatBusy = false;
+          chatSendBtn.disabled = false;
+          chatSendBtn.textContent = '[ENVIAR →]';
+          contactWinStatus.textContent = 'WIN_09 // BOT_LIVE';
+          chatInput.focus();
+        }
+      }
+
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendChatMessage(chatInput.value);
+      });
+
+      chatChips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          sendChatMessage(chip.dataset.prompt || chip.textContent);
+        });
+      });
+
+      chatClearBtn.addEventListener('click', () => {
+        try {
+          sessionStorage.removeItem('shk_chat_session');
+        } catch (_) {}
+        chatMessages.innerHTML = '';
+        appendChatMessage(
+          '[BOT // SHASEKI]',
+          'Terminal reiniciada. Preguntame sobre automatización con n8n + WhatsApp, visuales generativos, diseño web o disponibilidad para tu proyecto.',
+          false
+        );
+      });
+
+      // Brief Form Engine
       const deployForm = document.getElementById('deploy-form');
+      const deploySubmitBtn = document.getElementById('deploy-submit-btn');
       const deployConfirm = document.getElementById('deploy-confirm');
+      const deployConfirmTitle = document.getElementById('deploy-confirm-title');
       const deployReceipt = document.getElementById('deploy-receipt');
       const deployReset = document.getElementById('deploy-reset');
+      const deployMailtoFallback = document.getElementById('deploy-mailto-fallback');
 
-      deployForm.addEventListener('submit', (e) => {
+      deployForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(deployForm);
         const receipt = {
-          status: 'BRIEF_ENQUEUED',
           target: 'SHASEKI.PRO',
           nombre_empresa: formData.get('name'),
+          contacto: formData.get('contact'),
           servicio: formData.get('service'),
           objetivo: formData.get('detail'),
           timestamp: new Date().toISOString()
         };
-        deployReceipt.textContent =
-          '[OK] BRIEF_ENQUEUED -> SHASEKI.PRO\n\n' +
-          JSON.stringify(receipt, null, 2);
-        deployForm.classList.add('hidden');
-        deployConfirm.classList.remove('hidden');
+
+        const mailSubject = `[BRIEF SHASEKI] ${receipt.servicio} — ${receipt.nombre_empresa}`;
+        const mailBody = `Nombre/Empresa: ${receipt.nombre_empresa}\nContacto: ${receipt.contacto}\nServicio: ${receipt.servicio}\n\nObjetivo:\n${receipt.objetivo}`;
+        deployMailtoFallback.href = `mailto:hola@shaseki.pro?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+
+        if (!SHASEKI_CONFIG.briefWebhookUrl) {
+          receipt.status = 'LOCAL_PREVIEW';
+          deployConfirmTitle.textContent = '[PREVIEW] WEBHOOK_NO_CONFIGURADO -> USÁ EMAIL DIRECTO';
+          deployReceipt.textContent = JSON.stringify(receipt, null, 2);
+          deployMailtoFallback.classList.remove('hidden');
+          deployForm.classList.add('hidden');
+          deployConfirm.classList.remove('hidden');
+          return;
+        }
+
+        deploySubmitBtn.disabled = true;
+        deploySubmitBtn.textContent = '[ENVIANDO...]';
+
+        try {
+          const response = await fetch(SHASEKI_CONFIG.briefWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(receipt)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          receipt.status = 'BRIEF_ENQUEUED';
+          deployConfirmTitle.textContent = '[OK] BRIEF_ENQUEUED -> SHASEKI.PRO';
+          deployReceipt.textContent = JSON.stringify(receipt, null, 2);
+          deployMailtoFallback.classList.add('hidden');
+        } catch (err) {
+          receipt.status = 'WEBHOOK_ERROR';
+          deployConfirmTitle.textContent = '[ERROR] NO SE PUDO ENVIAR AL WEBHOOK -> USÁ EMAIL DIRECTO';
+          deployReceipt.textContent = JSON.stringify(receipt, null, 2);
+          deployMailtoFallback.classList.remove('hidden');
+        } finally {
+          deploySubmitBtn.disabled = false;
+          deploySubmitBtn.textContent = '[ENVIAR BRIEF // DEPLOY]';
+          deployForm.classList.add('hidden');
+          deployConfirm.classList.remove('hidden');
+        }
       });
 
       deployReset.addEventListener('click', () => {
         deployForm.reset();
         deployConfirm.classList.add('hidden');
+        deployMailtoFallback.classList.add('hidden');
         deployForm.classList.remove('hidden');
       });
 

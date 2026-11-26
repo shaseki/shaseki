@@ -1,0 +1,130 @@
+/* ==========================================================================
+   SHASEKI DESIGN SYSTEM — TOKENS & BASE UTILITIES
+   Target: shaseki.pro
+   ========================================================================== */
+
+:root {
+  /* 1. COLORES */
+  --bg-primary: #000000;
+  --bg-surface: #0B0B0B;
+  --fg-primary: #DCDAD0;
+  --fg-muted: #737373;
+  --border-subtle: #222222;
+  --border-strong: #DCDAD0;
+
+  /* 2. TIPOGRAFÍA */
+  --font-display: 'Unbounded', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+
+  /* Escala tipográfica fluida */
+  --text-xs: 0.75rem;   /* 12px - Metadatos / Códigos */
+  --text-sm: 0.875rem;  /* 14px - UI / Navegación */
+  --text-base: 1rem;    /* 16px - Lectura */
+  --text-lg: 1.5rem;    /* 24px - Subtítulos */
+  --text-xl: clamp(2rem, 5vw, 4rem);     /* Títulos de sección */
+  --text-hero: clamp(3rem, 9vw, 7.5rem); /* Display principal */
+
+  /* 3. ESPACIADO (Grilla estricta de 4px / 8px) */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 1rem;     /* 16px */
+  --space-4: 1.5rem;   /* 24px */
+  --space-5: 2rem;     /* 32px */
+  --space-6: 3rem;     /* 48px */
+  --space-8: 4rem;     /* 64px */
+  --space-12: 6rem;    /* 96px */
+  --space-16: 8rem;    /* 128px */
+
+  /* 4. GEOMETRÍA (Principio Oblicuo) */
+  --radius: 0px;
+  --chamfer-sm: 8px;
+  --chamfer-md: 16px;
+  --container-max: 1440px;
+
+  /* 5. MOTION */
+  --ease-sharp: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-base: 350ms;
+}
+
+/* ==========================================================================
+   BASE RESET BRUTALISTA
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: var(--radius);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   UTILIDADES DE MARCA
+   ========================================================================== */
+
+/* Tipografía Display SHASEKI */
+.shk-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Metadatos técnicos (ej: [SHK-001] // 2026) */
+.shk-meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Chaflán oblicuo en esquinas opuestas (replica la geometría del isotipo) */
+.shk-chamfer {
+  clip-path: polygon(
+    var(--chamfer-md) 0,
+    100% 0,
+    100% calc(100% - var(--chamfer-md)),
+    calc(100% - var(--chamfer-md)) 100%,
+    0 100%,
+    0 var(--chamfer-md)
+  );
+}
+
+/* Botón base con inversión seca */
+.shk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  color: var(--fg-primary);
+  border: 1px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration-instant) linear,
+              color var(--duration-instant) linear;
+}
+
+.shk-btn:hover {
+  background-color: var(--fg-primary);
+  color: var(--bg-primary);
+}

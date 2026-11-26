@@ -62,9 +62,10 @@ El sistema de diseño prohíbe explícitamente sombras (`box-shadow: none`), gra
 | **Tinta Principal** | `--fg-primary` | `#DCDAD0` | *Bone White* — Tipografía principal, bordes activos e inversión en hover. |
 | **Tinta Secundaria** | `--fg-muted` | `#737373` | Metadatos técnicos, descripciones y estados inactivos. |
 | **Borde Técnico** | `--border-subtle` | `#222222` | Líneas divisorias estructurales de `1px`. |
-| **Display** | `--font-display` | `Unbounded` (`700–900`) | Marca y titulares en `UPPERCASE`. |
+| **Display** | `--font-display` | `Unbounded` (`700–800`) | Marca y titulares en `UPPERCASE`. |
 | **UI / Técnica** | `--font-mono` | `JetBrains Mono` (`400–500`) | Navegación, botones, logs JSON y metadatos. |
-| **Geometría** | `--chamfer-sm / md` | `10px / 16px` (`45°`) | Cortes oblicuos en botones primarios y paneles de confirmación. |
+| **Cuerpo (Opcional)** | `--font-body` | `Space Grotesk` (`400–500`) | Texto de lectura largo cuando aplica. |
+| **Geometría** | `--chamfer-sm / md` | `8px / 16px` (`45°`) | Cortes oblicuos en botones primarios y paneles de confirmación. |
 
 ---
 
@@ -74,8 +75,7 @@ El sistema de diseño prohíbe explícitamente sombras (`box-shadow: none`), gra
 | :--- | :--- | :--- | :--- |
 | **`SHK-001`** | **KOPROLITOS** | Stop-motion, Hydra live-coding, composición 2.5D & Web | [shaseki.github.io/koprolitos](https://shaseki.github.io/koprolitos/) |
 | **`SHK-002`** | **AI-AUTOMATION-FINAL** | Orquestación n8n, agentes IA & dashboard operativo | [shaseki.github.io/AI-Automation-Final](https://shaseki.github.io/AI-Automation-Final/) |
-| **`SHK-003`** | **ESCALERA CIRCULAR** | Co-producción audiovisual & identidad visual | *En archivo* |
-| **`SHK-004`** | **LIVE VISUAL SYSTEMS** | Motion de gran formato & visuales generativos en vivo | *En archivo* |
+| **`SHK-003`** | **LIVE VISUAL SYSTEMS** | Motion de gran formato & visuales generativos en vivo | *En archivo* |
 
 ---
 
@@ -120,16 +120,20 @@ Abrir `http://localhost:8080` en el navegador.
 2. En **Settings → Pages**, configurar el origen en `Deploy from a branch` (`main` / `/root`).
 3. Añadir un archivo `CNAME` en la raíz con el dominio `shaseki.pro` y apuntar los registros DNS (`A` / `CNAME`) hacia GitHub Pages con HTTPS forzado.
 
-### Integración con Webhook de n8n (Próximo Paso)
-Para conectar el formulario `#deploy-form` (`WIN_09`) con un flujo real en tu servidor self-hosted de **n8n**, reemplazá el handler de `submit` por un `fetch()` `POST` hacia tu endpoint de producción:
+### Integración con Bot en Vivo, WhatsApp y Webhook de n8n
+En [index.html](index.html), dentro del objeto `SHASEKI_CONFIG` al inicio del `<script>`, podés configurar directamente las tres integraciones de `05:CONTACTO` (`WIN_08` y `WIN_09`):
 
 ```javascript
-await fetch('https://n8n.shaseki.pro/webhook/client-intake', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(receipt)
-});
+const SHASEKI_CONFIG = {
+  whatsappNumber: '5492804000000', // Código país + área, sin + ni espacios
+  whatsappDefaultText: 'Hola SHASEKI, vi tu portfolio shaseki.pro y quiero hacer una consulta.',
+  chatWebhookUrl: 'https://n8n.shaseki.pro/webhook/portfolio-chat',
+  briefWebhookUrl: 'https://n8n.shaseki.pro/webhook/client-intake'
+};
 ```
+
+* `chatWebhookUrl` recibe `{ sessionId, message, source, timestamp }` por `POST` y espera JSON con `reply`, `output`, `text` o `message`.
+* `briefWebhookUrl` recibe los campos del formulario `#deploy-form` por `POST` y cae a `mailto:hola@shaseki.pro` si aún no está configurado o falla la red.
 
 ---
 
